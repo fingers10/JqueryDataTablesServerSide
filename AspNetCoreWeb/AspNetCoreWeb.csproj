@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Abdul Rahman</Authors>
+    <Company>Fingers10</Company>
+    <Product>JqueryDataTablesServerSide.AspNetCore</Product>
+    <Description>Simple and Powerful Dynamic Multiple Column Searching and Sorting for Jquery DataTables Asp.Net Core Server Side</Description>
+    <Copyright>Fingers10</Copyright>
+    <PackageLicenseUrl>MIT</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/fingers10/JqueryDataTablesServerSide</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/fingers10/JqueryDataTablesServerSide</RepositoryUrl>
+    <RepositoryType>Public</RepositoryType>
+    <PackageTags>JqueryDataTables, Asp.Net Core, Server Side, Multiple Column, Dynamic, Searching, Sorting</PackageTags>
+    <PackageId>JqueryDataTablesServerSide.AspNetCoreWeb</PackageId>
   </PropertyGroup>
 
 </Project>
