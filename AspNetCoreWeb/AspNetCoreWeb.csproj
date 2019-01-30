@@ -7,7 +7,7 @@
     <Product>JqueryDataTablesServerSide.AspNetCore</Product>
     <Description>Simple and Powerful Dynamic Multiple Column Searching and Sorting for Jquery DataTables Asp.Net Core Server Side</Description>
     <Copyright>Fingers10</Copyright>
-    <PackageLicenseUrl>MIT</PackageLicenseUrl>
+    <PackageLicenseUrl>https://licenses.nuget.org/MIT</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/fingers10/JqueryDataTablesServerSide</PackageProjectUrl>
     <RepositoryUrl>https://github.com/fingers10/JqueryDataTablesServerSide</RepositoryUrl>
     <RepositoryType>Public</RepositoryType>
