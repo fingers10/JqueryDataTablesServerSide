@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -12,8 +12,9 @@
     <RepositoryUrl>https://github.com/fingers10/JqueryDataTablesServerSide</RepositoryUrl>
     <RepositoryType>Public</RepositoryType>
     <PackageTags>JqueryDataTables, Asp.Net Core, Server Side, Multiple Column, Dynamic, Searching, Sorting</PackageTags>
-    <PackageId>JqueryDataTablesServerSide.AspNetCoreWeb</PackageId>
+    <PackageId>JqueryDataTables.ServerSide.AspNetCoreWeb</PackageId>
     <PackageIconUrl>https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Icons/logo.jpg?raw=true</PackageIconUrl>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
 </Project>
