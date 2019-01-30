@@ -13,6 +13,7 @@
     <RepositoryType>Public</RepositoryType>
     <PackageTags>JqueryDataTables, Asp.Net Core, Server Side, Multiple Column, Dynamic, Searching, Sorting</PackageTags>
     <PackageId>JqueryDataTablesServerSide.AspNetCoreWeb</PackageId>
+    <PackageIconUrl>https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Icons/logo.jpg?raw=true</PackageIconUrl>
   </PropertyGroup>
 
 </Project>
