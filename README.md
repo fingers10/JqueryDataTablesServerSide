@@ -21,8 +21,9 @@ Well... there are lots of different approaches how to get a Jquery DataTables wi
 * `[Sortable(Default = true)]`
 
 # Compatibility Chart
+>The following chart describes the operator compatibility with data types with green as compatible and red as not compatible.
 
-
+![Compatibility Chart](https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Icons/compatibility-chart.PNG)
 
 # NuGet:
 * [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v1.2.1**
@@ -252,5 +253,14 @@ To activate and make Jquery DataTable communicate with asp.net core backend,
     }
     
  **Please note:** If you are having DataAccessLogic in a separate project, the create instance of `SearchOptionsProcessor` and `SortOptionsProcessor` inside **ActionMethod/Handler** and pass it as a parameter to Data Access Logic.
-  
  
+ # Author
+ * **Abdul Rahman** - Software Developer - from India. Software Consultant, Architect, Freelance Lecture/Developer and Web Geek.  
+ 
+ # Contributions
+ Feel free to submit a pull request if you can add additional functionality or find any bugs (to see a list of active issues, visit the   Issues section. Please make sure all commits are properly documented.
+  
+ # License
+ MIT-licensed
+
+ Enjoy!
