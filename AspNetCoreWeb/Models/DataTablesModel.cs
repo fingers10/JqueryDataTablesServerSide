@@ -1,4 +1,6 @@
-﻿namespace JqueryDataTables.ServerSide.AspNetCoreWeb
+﻿using System.Collections.Generic;
+
+namespace JqueryDataTables.ServerSide.AspNetCoreWeb
 {
     ///This view model class has been referred from example created by Marien Monnier at Soft.it. All credits to Marien for this class
 
@@ -29,7 +31,7 @@
         /// This is an array of data source objects, one for each row, which will be used by DataTables.
         /// Note that this parameter's name can be changed using the ajaxDT option's dataSrc property.
         /// </summary>
-        public T[] data { get; set; }
+        public IEnumerable<T> data { get; set; }
     }
 
     /// <summary>
@@ -104,12 +106,7 @@
         /// <summary>
         /// For Posting Additional Parameters to Server
         /// </summary>
-        public string StringValue1 { get; set; }
-
-        /// <summary>
-        /// For Posting Additional Parameters to Server
-        /// </summary>
-        public string StringValue2 { get; set; }
+        public IEnumerable<string> AdditionalValues { get; set; }
 
     }
 

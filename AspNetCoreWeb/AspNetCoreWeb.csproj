@@ -13,8 +13,8 @@
     <RepositoryType>Public</RepositoryType>
     <PackageTags>JqueryDataTables, Asp.Net Core, Server Side, Multiple Column, Dynamic, Searching, Sorting</PackageTags>
     <PackageId>JqueryDataTables.ServerSide.AspNetCoreWeb</PackageId>
-    <PackageIconUrl>https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Icons/logo.jpg?raw=true</PackageIconUrl>
-    <Version>1.1.1</Version>
+    <PackageIconUrl>https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Icons/logo.png?raw=true</PackageIconUrl>
+    <Version>1.2.1</Version>
     <RootNamespace>JqueryDataTables.ServerSide.AspNetCoreWeb</RootNamespace>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>Improvements and bug fixes.</PackageReleaseNotes>
