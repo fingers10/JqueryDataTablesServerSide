@@ -17,7 +17,7 @@
     <Version>1.2.1</Version>
     <RootNamespace>JqueryDataTables.ServerSide.AspNetCoreWeb</RootNamespace>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>Improvements and bug fixes.</PackageReleaseNotes>
+    <PackageReleaseNotes>Code and Logo Improvements.</PackageReleaseNotes>
   </PropertyGroup>
 
 </Project>
