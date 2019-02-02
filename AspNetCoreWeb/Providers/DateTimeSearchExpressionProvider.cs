@@ -1,14 +1,16 @@
 using System;
 using System.Linq.Expressions;
 
-namespace AspNetCoreWeb.Providers
+namespace JqueryDataTables.ServerSide.AspNetCoreWeb
 {
-    public class DateTimeSearchExpressionProvider : ComparableSearchExpressionProvider
+    public class DateTimeSearchExpressionProvider:ComparableSearchExpressionProvider
     {
         public override ConstantExpression GetValue(string input)
         {
-            if (!DateTime.TryParse(input, out var value))
+            if(!DateTime.TryParse(input,out var value))
+            {
                 throw new ArgumentException("Invalid search value.");
+            }
 
             return Expression.Constant(value);
         }

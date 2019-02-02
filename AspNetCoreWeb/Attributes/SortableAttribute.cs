@@ -1,9 +1,9 @@
 using System;
 
-namespace AspNetCoreWeb.Attributes
+namespace JqueryDataTables.ServerSide.AspNetCoreWeb
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class SortableAttribute : Attribute
+    public class SortableAttribute:Attribute
     {
         public string EntityProperty { get; set; }
 

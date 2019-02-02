@@ -1,6 +1,4 @@
-using AspNetCoreWeb.Contracts;
-
-namespace AspNetCoreWeb.Infrastructure
+namespace JqueryDataTables.ServerSide.AspNetCoreWeb
 {
     public class SearchTerm
     {

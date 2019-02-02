@@ -1,10 +1,9 @@
-using AspNetCoreWeb.Providers;
 using System;
 
-namespace AspNetCoreWeb.Attributes
+namespace JqueryDataTables.ServerSide.AspNetCoreWeb
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class SearchableDateTimeAttribute : SearchableAttribute
+    public class SearchableDateTimeAttribute:SearchableAttribute
     {
         public SearchableDateTimeAttribute()
         {

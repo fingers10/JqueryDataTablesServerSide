@@ -3,7 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace AspNetCoreWeb.Infrastructure
+namespace JqueryDataTables.ServerSide.AspNetCoreWeb
 {
     public static class ExpressionHelper
     {
@@ -15,39 +15,47 @@ namespace AspNetCoreWeb.Infrastructure
             .GetMethods()
             .ToArray();
 
-        private static MethodInfo GetLambdaFuncBuilder(Type source, Type dest)
+        private static MethodInfo GetLambdaFuncBuilder(Type source,Type dest)
         {
-            var predicate = typeof(Func<,>).MakeGenericType(source, dest);
+            var predicate = typeof(Func<,>).MakeGenericType(source,dest);
             return LambdaMethod.MakeGenericMethod(predicate);
         }
 
         public static PropertyInfo GetPropertyInfo<T>(string name)
-            => typeof(T).GetProperties()
-                .Single(p => p.Name == name);
-
-        public static ParameterExpression Parameter<T>()
-            => Expression.Parameter(typeof(T));
-
-        public static MemberExpression GetPropertyExpression(ParameterExpression obj, PropertyInfo property)
-            => Expression.Property(obj, property);
-
-        public static LambdaExpression GetLambda<TSource, TDest>(ParameterExpression obj, Expression arg)
-            => GetLambda(typeof(TSource), typeof(TDest), obj, arg);
-
-        public static LambdaExpression GetLambda(Type source, Type dest, ParameterExpression obj, Expression arg)
         {
-            var lambdaBuilder = GetLambdaFuncBuilder(source, dest);
-            return (LambdaExpression)lambdaBuilder.Invoke(null, new object[] { arg, new[] { obj } });
+            return typeof(T).GetProperties()
+                           .Single(p => p.Name == name);
         }
 
-        public static IQueryable<T> CallWhere<T>(IQueryable<T> query, LambdaExpression predicate)
+        public static ParameterExpression Parameter<T>()
+        {
+            return Expression.Parameter(typeof(T));
+        }
+
+        public static MemberExpression GetPropertyExpression(ParameterExpression obj,PropertyInfo property)
+        {
+            return Expression.Property(obj,property);
+        }
+
+        public static LambdaExpression GetLambda<TSource, TDest>(ParameterExpression obj,Expression arg)
+        {
+            return GetLambda(typeof(TSource),typeof(TDest),obj,arg);
+        }
+
+        public static LambdaExpression GetLambda(Type source,Type dest,ParameterExpression obj,Expression arg)
+        {
+            var lambdaBuilder = GetLambdaFuncBuilder(source,dest);
+            return (LambdaExpression)lambdaBuilder.Invoke(null,new object[] { arg,new[] { obj } });
+        }
+
+        public static IQueryable<T> CallWhere<T>(IQueryable<T> query,LambdaExpression predicate)
         {
             var whereMethodBuilder = QueryableMethods
                 .First(x => x.Name == "Where" && x.GetParameters().Length == 2)
                 .MakeGenericMethod(typeof(T));
 
             return (IQueryable<T>)whereMethodBuilder
-                .Invoke(null, new object[] { query, predicate });
+                .Invoke(null,new object[] { query,predicate });
         }
 
         public static IQueryable<TEntity> CallOrderByOrThenBy<TEntity>(
@@ -58,14 +66,21 @@ namespace AspNetCoreWeb.Infrastructure
             LambdaExpression keySelector)
         {
             var methodName = "OrderBy";
-            if (useThenBy) methodName = "ThenBy";
-            if (descending) methodName += "Descending";
+            if(useThenBy)
+            {
+                methodName = "ThenBy";
+            }
+
+            if(descending)
+            {
+                methodName += "Descending";
+            }
 
             var method = QueryableMethods
                 .First(x => x.Name == methodName && x.GetParameters().Length == 2)
-                .MakeGenericMethod(typeof(TEntity), propertyType);
+                .MakeGenericMethod(typeof(TEntity),propertyType);
 
-            return (IQueryable<TEntity>)method.Invoke(null, new object[] { modifiedQuery, keySelector });
+            return (IQueryable<TEntity>)method.Invoke(null,new object[] { modifiedQuery,keySelector });
 
         }
     }

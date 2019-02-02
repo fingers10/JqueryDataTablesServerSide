@@ -1,4 +1,4 @@
-﻿namespace AspNetCoreWeb.Models
+﻿namespace JqueryDataTables.ServerSide.AspNetCoreWeb
 {
     ///This view model class has been referred from example created by Marien Monnier at Soft.it. All credits to Marien for this class
 

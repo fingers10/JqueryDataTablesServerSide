@@ -1,10 +1,9 @@
-using AspNetCoreWeb.Providers;
 using System;
 
-namespace AspNetCoreWeb.Attributes
+namespace JqueryDataTables.ServerSide.AspNetCoreWeb
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class SearchableDoubleAttribute : SearchableAttribute
+    public class SearchableDoubleAttribute:SearchableAttribute
     {
         public SearchableDoubleAttribute()
         {

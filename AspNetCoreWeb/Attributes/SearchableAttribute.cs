@@ -1,11 +1,9 @@
-using AspNetCoreWeb.Contracts;
-using AspNetCoreWeb.Providers;
 using System;
 
-namespace AspNetCoreWeb.Attributes
+namespace JqueryDataTables.ServerSide.AspNetCoreWeb
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class SearchableAttribute : Attribute
+    public class SearchableAttribute:Attribute
     {
         public string EntityProperty { get; set; }
 

@@ -1,10 +1,9 @@
-using AspNetCoreWeb.Providers;
 using System;
 
-namespace AspNetCoreWeb.Attributes
+namespace JqueryDataTables.ServerSide.AspNetCoreWeb
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class SearchableLongAttribute : SearchableAttribute
+    public class SearchableLongAttribute:SearchableAttribute
     {
         public SearchableLongAttribute()
         {

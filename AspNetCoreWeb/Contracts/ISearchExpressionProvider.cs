@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace AspNetCoreWeb.Contracts
+namespace JqueryDataTables.ServerSide.AspNetCoreWeb
 {
     public interface ISearchExpressionProvider
     {

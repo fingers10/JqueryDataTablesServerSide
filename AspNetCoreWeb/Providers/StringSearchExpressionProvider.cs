@@ -4,9 +4,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace AspNetCoreWeb.Providers
+namespace JqueryDataTables.ServerSide.AspNetCoreWeb
 {
-    public class StringSearchExpressionProvider : DefaultSearchExpressionProvider
+    public class StringSearchExpressionProvider:DefaultSearchExpressionProvider
     {
         private const string StartsWithOperator = "sw";
         private const string ContainsOperator = "co";
@@ -31,29 +31,31 @@ namespace AspNetCoreWeb.Providers
             => Expression.Constant(StringComparison.OrdinalIgnoreCase);
 
         public override IEnumerable<string> GetOperators()
-            => base.GetOperators()
-                .Concat(
-                    new[]
-                    {
+        {
+            return base.GetOperators()
+                           .Concat(
+                               new[]
+                               {
                         StartsWithOperator,
                         ContainsOperator
-                    });
+                               });
+        }
 
-        public override Expression GetComparison(MemberExpression left, string op, ConstantExpression right)
+        public override Expression GetComparison(MemberExpression left,string op,ConstantExpression right)
         {
-            switch (op.ToLower())
+            switch(op.ToLower())
             {
-                case StartsWithOperator:
-                    return Expression.Call(left, StartsWithMethod, right, IgnoreCase);
+            case StartsWithOperator:
+            return Expression.Call(left,StartsWithMethod,right,IgnoreCase);
 
-                case ContainsOperator:
-                    return Expression.Call(Expression.Call(left, ToLowerMethod), ContainsMethod, right);
+            case ContainsOperator:
+            return Expression.Call(Expression.Call(left,ToLowerMethod),ContainsMethod,right);
 
-                case EqualsOperator:
-                    return Expression.Call(Expression.Call(left, ToLowerMethod), StringEqualsMethod, right, IgnoreCase);
+            case EqualsOperator:
+            return Expression.Call(Expression.Call(left,ToLowerMethod),StringEqualsMethod,right,IgnoreCase);
 
-                default:
-                    return base.GetComparison(left, op, right);
+            default:
+            return base.GetComparison(left,op,right);
             }
         }
     }
