@@ -26,7 +26,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb
                 yield return new SearchTerm {
                     ValidSyntax = true,
                     Name = column.Data,
-                    Operator = column.Name,
+                    Operator = string.IsNullOrWhiteSpace(column.Name) ? "eq" : column.Name,
                     Value = column.Search.Value.ToLower()
                 };
             }
