@@ -258,6 +258,12 @@ To activate and make Jquery DataTable communicate with asp.net core backend,
     
  **Please note:** If you are having DataAccessLogic in a separate project, the create instance of `SearchOptionsProcessor` and `SortOptionsProcessor` inside **ActionMethod/Handler** and pass it as a parameter to Data Access Logic.
  
+ # Coming Soon
+ JqueryDataTablesServerSide is actively under development and I plan to have even more useful features implemented soon, including:
+ * Server Side Excel Export
+ 
+ Get in touch if there are any features you feel JqueryDataTablesServerSide needs.
+ 
  # Platform Used
  * Asp.Net Core 2.2
  
