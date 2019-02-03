@@ -3,7 +3,9 @@
 # Jquery DataTables Asp.Net Core Server Side
 This repository is a Server Side processor for Jquery DataTables with Asp.Net Core as backend. It provides a quick way to implement dynamic multiple column searching and sorting at the server side. This can be done by decorating your model properties with simple attributes.
 
-![Demo](https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Icons/Jquery%20DataTables.gif)
+![Demo](https://github.com/fingers10/JqueryDataTablesServerSideDemo/blob/master/AspNetCoreServerSide/wwwroot/images/demo.gif)
+
+[Demo Implementation Project URL - Free Download](https://github.com/fingers10/JqueryDataTablesServerSideDemo)
 
 # Wait - Why JqueryDataTablesServerSide ?
 Well... there are lots of different approaches how to get a Jquery DataTables with Asp.Net Core app running. I thought it would be nice for .NET devs to use the ASP.NET Core backend and just decorate the model properties with a pretty simple attributes called `[Searchable]` and `[Sortable]`. I just combine ASP.NET Core & Jquery DataTables for easy server side processing.
