@@ -270,9 +270,6 @@ To activate and make Jquery DataTable communicate with asp.net core backend,
  # Tools Used
  * Visual Studio Community 2017
  
- # Packages Used
- * AutoMapper
- 
  # Author
  * **Abdul Rahman** - Software Developer - from India. Software Consultant, Architect, Freelance Lecturer/Developer and Web Geek.  
  
