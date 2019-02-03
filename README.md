@@ -258,7 +258,7 @@ To activate and make Jquery DataTable communicate with asp.net core backend,
  * **Abdul Rahman** - Software Developer - from India. Software Consultant, Architect, Freelance Lecturer/Developer and Web Geek.  
  
  # Contributions
- Feel free to submit a pull request if you can add additional functionality or find any bugs (to see a list of active issues, visit the   Issues section. Please make sure all commits are properly documented.
+ Feel free to submit a pull request if you can add additional functionality or find any bugs (to see a list of active issues), visit the   Issues section. Please make sure all commits are properly documented.
   
  # License
  MIT-licensed
