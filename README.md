@@ -274,6 +274,6 @@ To activate and make Jquery DataTable communicate with asp.net core backend,
  Feel free to submit a pull request if you can add additional functionality or find any bugs (to see a list of active issues), visit the   Issues section. Please make sure all commits are properly documented.
   
  # License
- MIT-licensed
+ JqueryDataTablesServerSide is release under the MIT license. You are free to use, modify and distribute this software, as long as the copyright header is left intact (specifically the comment block which starts with /*!.
 
  Enjoy!
