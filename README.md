@@ -153,7 +153,7 @@ To activate and make Jquery DataTable communicate with asp.net core backend,
             ]
         });
 
-#Trigger Search 
+ # Trigger Search 
 >Add the following script to trigger search only onpress of **Enter Key**.
 
     table.columns().every(function (index) {
