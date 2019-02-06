@@ -205,8 +205,28 @@ To activate and make Jquery DataTable communicate with asp.net core backend,
 # ActionMethod/PageHandler
 >On DataTable's Ajax Post Request, `DTParameters` will read the DataTable's state and `DTResult<T>` will accept `IEnumerable<T>` response data to be returned back to table as `JsonResult`.
 
+## ActionMethod
     [HttpPost]
     public async Task<IActionResult> LoadTable([FromBody]DTParameters param)
+    {
+        try
+        {
+            var data = await _demoService.GetDataAsync(param);
+
+            return new JsonResult(new DTResult<Demo> {
+                draw = param.Draw,
+                data = data,
+                recordsFiltered = data.Length,
+                recordsTotal = data.Length
+            });
+        } catch(Exception e)
+        {
+            Console.Write(e.Message);
+            return new JsonResult(new { error = "Internal Server Error" });
+        }
+    }
+## PageHandler
+    public async Task<IActionResult> OnPostLoadTableAsync([FromBody]DTParameters param)
     {
         try
         {
