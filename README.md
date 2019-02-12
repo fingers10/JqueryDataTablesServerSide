@@ -281,6 +281,8 @@ To activate and make Jquery DataTable communicate with asp.net core backend,
  # Coming Soon
  JqueryDataTablesServerSide is actively under development and I plan to have even more useful features implemented soon, including:
  * Server Side Excel Export
+ * DataTable TagHelper
+ * Server Side Configuration to generate client scripts.
  
  Get in touch if there are any features you feel JqueryDataTablesServerSide needs.
  
