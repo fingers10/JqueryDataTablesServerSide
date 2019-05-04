@@ -1,4 +1,4 @@
-namespace JqueryDataTables.ServerSide.AspNetCoreWeb
+namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 {
     public class SortTerm
     {

@@ -1,9 +1,11 @@
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Attributes;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace JqueryDataTables.ServerSide.AspNetCoreWeb
+namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 {
     public class SearchOptionsProcessor<T, TEntity>
     {

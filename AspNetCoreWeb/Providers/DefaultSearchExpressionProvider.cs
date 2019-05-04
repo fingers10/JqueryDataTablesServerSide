@@ -1,8 +1,9 @@
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace JqueryDataTables.ServerSide.AspNetCoreWeb
+namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Providers
 {
     public class DefaultSearchExpressionProvider:ISearchExpressionProvider
     {

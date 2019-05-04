@@ -3,7 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace JqueryDataTables.ServerSide.AspNetCoreWeb
+namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 {
     public static class ExpressionHelper
     {

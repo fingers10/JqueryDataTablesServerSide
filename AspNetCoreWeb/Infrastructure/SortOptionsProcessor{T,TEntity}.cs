@@ -1,13 +1,15 @@
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Attributes;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace JqueryDataTables.ServerSide.AspNetCoreWeb
+namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 {
     public class SortOptionsProcessor<T, TEntity>
     {
-        private static IEnumerable<SortTerm> GetAllTerms(DTParameters table)
+        private static IEnumerable<SortTerm> GetAllTerms(JqueryDataTablesParameters table)
         {
             var dtColumns = table.Columns as IList<DTColumn> ?? table.Columns.ToList();
 
@@ -31,7 +33,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb
             }
         }
 
-        private static IEnumerable<SortTerm> GetValidTerms(DTParameters table)
+        private static IEnumerable<SortTerm> GetValidTerms(JqueryDataTablesParameters table)
         {
             var queryTerms = GetAllTerms(table).ToArray();
             if(!queryTerms.Any())
@@ -59,7 +61,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb
             }
         }
 
-        public IQueryable<TEntity> Apply(IQueryable<TEntity> query,DTParameters table)
+        public IQueryable<TEntity> Apply(IQueryable<TEntity> query,JqueryDataTablesParameters table)
         {
             var terms = GetValidTerms(table).ToArray();
             if(!terms.Any())
