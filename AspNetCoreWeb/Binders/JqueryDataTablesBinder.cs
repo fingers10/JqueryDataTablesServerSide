@@ -34,7 +34,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Binders
             var order = new List<DTOrder>();
             while(allValues.Any(a => a.Key == "order[" + o + "][column]"))
             {
-                Enum.TryParse(allValues.FirstOrDefault(a => a.Key == "order[" + o + "][dir]").Value,
+                Enum.TryParse(allValues.FirstOrDefault(a => a.Key == "order[" + o + "][dir]").Value.ToString().ToUpperInvariant(),
                     out DTOrderDir dir);
 
                 order.Add(new DTOrder {

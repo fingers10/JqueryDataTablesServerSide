@@ -11,6 +11,9 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
         public string Class { get; set; }
         public object Model { get; set; }
 
+        [HtmlAttributeName("enable-searching")]
+        public bool EnableSearching { get; set; }
+
         [HtmlAttributeName("thead-class")]
         public string TheadClass { get; set; }
 
@@ -34,18 +37,27 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
             var searchRow = new StringBuilder();
 
             headerRow.AppendLine("<tr>");
-            searchRow.AppendLine("<tr>");
+
+            if(EnableSearching)
+            {
+                searchRow.AppendLine("<tr>");
+            }
 
             foreach(PropertyDescriptor prop in properties)
             {
                 var column = prop.DisplayName ?? prop.Name;
 
                 headerRow.AppendLine($"<th>{column}</th>");
+
+                if (!EnableSearching) continue;
                 searchRow.AppendLine($@"<th class=""{SearchRowThClass}""><span class=""sr-only"">{column}</span><input type=""search"" class=""{SearchInputClass}"" placeholder=""Search {column}"" aria-label=""{column}"" /></th>");
             }
 
             headerRow.AppendLine("</tr>");
-            searchRow.AppendLine("</tr>");
+            if(EnableSearching)
+            {
+                searchRow.AppendLine("</tr>");
+            }
 
             output.Content.SetHtmlContent($"{headerRow.ToString()}{searchRow.ToString()}");
             output.PostContent.SetHtmlContent("</thead>");
