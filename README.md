@@ -1,10 +1,12 @@
 ![Logo](https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Icons/logo.png)
 
+[![NuGet Badge](https://buildstats.info/nuget/jquerydatatables.serverside.aspnetcoreweb)](https://www.nuget.org/packages/JqueryDatatables.ServerSide.AspNetCoreWeb/)
+[![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/fingers10/open-source-badges/)
+
 [![GitHub license](https://img.shields.io/github/license/fingers10/JqueryDataTablesServerSide.svg)](https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/LICENSE)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/fingers10/JqueryDataTablesServerSide/graphs/commit-activity)
 [![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](https://GitHub.com/fingers10/JqueryDataTablesServerSide)
 [![HitCount](http://hits.dwyl.io/fingers10/badges.svg)](http://hits.dwyl.io/fingers10/badges)
-[![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/fingers10/open-source-badges/)
 
 [![GitHub forks](https://img.shields.io/github/forks/fingers10/JqueryDataTablesServerSide.svg?style=social&label=Fork&maxAge=2592000)](https://GitHub.com/fingers10/JqueryDataTablesServerSide/network/)
 [![GitHub stars](https://img.shields.io/github/stars/fingers10/JqueryDataTablesServerSide.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/fingers10/JqueryDataTablesServerSide/stargazers/)
