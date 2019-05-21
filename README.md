@@ -16,6 +16,9 @@
 [![GitHub issues](https://img.shields.io/github/issues/fingers10/JqueryDataTablesServerSide.svg)](https://GitHub.com/fingers10/JqueryDataTablesServerSide/issues/)
 [![GitHub issues-closed](https://img.shields.io/github/issues-closed/fingers10/JqueryDataTablesServerSide.svg)](https://GitHub.com/fingers10/JqueryDataTablesServerSide/issues?q=is%3Aissue+is%3Aclosed)
 
+> **I'm happy to help you with my Nuget Package. Please support and encouarge me to develop more stuffs like this.**
+
+**Donate via  [![Donate via PayPal](https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png)](https://paypal.me/arsmsi)**
 
 # Jquery DataTables Asp.Net Core Server Side
 This repository is a Server Side processor for Jquery DataTables with Asp.Net Core as backend. It provides a quick way to implement dynamic multiple column searching and sorting at the server side. This can be done by decorating your model properties with simple attributes.
