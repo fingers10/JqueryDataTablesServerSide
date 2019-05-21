@@ -322,3 +322,8 @@ To activate and make Jquery DataTable communicate with asp.net core backend,
  JqueryDataTablesServerSide is release under the MIT license. You are free to use, modify and distribute this software, as long as the copyright header is left intact (specifically the comment block which starts with /*!.
 
  Enjoy!
+
+ # Support & Donate
+ > **I'm happy to help you with my Nuget Package. Please support and encouarge me to develop more stuffs like this.**
+
+ **Donate via  [![Donate via PayPal](https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png)](https://paypal.me/arsmsi)**
