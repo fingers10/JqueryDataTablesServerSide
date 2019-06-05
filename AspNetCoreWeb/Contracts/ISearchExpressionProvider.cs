@@ -13,5 +13,11 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Contracts
             MemberExpression left,
             string op,
             ConstantExpression right);
+
+        Expression GetComparison(
+            MemberExpression left,
+            string op,
+            Expression right);
+
     }
 }

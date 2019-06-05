@@ -3,6 +3,7 @@ using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
@@ -13,19 +14,20 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
         {
             var dtColumns = columns as IList<DTColumn> ?? columns.ToList();
 
-            if(dtColumns.All(x => string.IsNullOrWhiteSpace(x.Search.Value)))
+            if (dtColumns.All(x => string.IsNullOrWhiteSpace(x.Search.Value)))
             {
                 yield break;
             }
 
-            foreach(var column in dtColumns)
+            foreach (var column in dtColumns)
             {
-                if(string.IsNullOrWhiteSpace(column.Search.Value))
+                if (string.IsNullOrWhiteSpace(column.Search.Value))
                 {
                     continue;
                 }
 
-                yield return new SearchTerm {
+                yield return new SearchTerm
+                {
                     ValidSyntax = true,
                     Name = column.Data,
                     Operator = string.IsNullOrWhiteSpace(column.Name) ? "eq" : column.Name,
@@ -40,23 +42,24 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 .Where(x => x.ValidSyntax)
                 .ToArray();
 
-            if(!queryTerms.Any())
+            if (!queryTerms.Any())
             {
                 yield break;
             }
 
             var declaredTerms = GetTermsFromModel();
 
-            foreach(var term in queryTerms)
+            foreach (var term in queryTerms)
             {
                 var declaredTerm =
-                    declaredTerms.SingleOrDefault(x => x.Name.Equals(term.Name,StringComparison.OrdinalIgnoreCase));
-                if(declaredTerm == null)
+                    declaredTerms.SingleOrDefault(x => x.Name.Equals(term.Name, StringComparison.OrdinalIgnoreCase));
+                if (declaredTerm == null)
                 {
                     continue;
                 }
 
-                yield return new SearchTerm {
+                yield return new SearchTerm
+                {
                     ValidSyntax = term.ValidSyntax,
                     Name = declaredTerm.Name,
                     EntityName = declaredTerm.EntityName,
@@ -67,17 +70,17 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             }
         }
 
-        public IQueryable<TEntity> Apply(IQueryable<TEntity> query,IEnumerable<DTColumn> columns)
+        public IQueryable<TEntity> Apply(IQueryable<TEntity> query, IEnumerable<DTColumn> columns)
         {
             var terms = GetValidTerms(columns).ToArray();
-            if(!terms.Any())
+            if (!terms.Any())
             {
                 return query;
             }
 
             var modifiedQuery = query;
 
-            foreach(var term in terms)
+            foreach (var term in terms)
             {
                 var propertyInfo = ExpressionHelper
                     .GetPropertyInfo<TEntity>(term.EntityName ?? term.Name);
@@ -88,8 +91,18 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 
                 // x.Property
                 var left = ExpressionHelper.GetPropertyExpression(obj,propertyInfo);
+                //var left = System.Linq.Expressions.Expression.Property(obj, propertyInfo);
+
+                /// read this!!!!
+                /// http://askjonskeet.azurewebsites.net/answer/28476847/How-to-get-Expression-for-Nullable-values-(-fields-)-without-converting-from-ExpressionConvert-in-C
+                /// 
+
                 // "Value"
-                var right = term.ExpressionProvider.GetValue(term.Value);
+                var rightPreValue = term.ExpressionProvider.GetValue(term.Value);
+
+                var right = rightPreValue.Type != left.Type
+                    ? (Expression)Expression.Convert(rightPreValue, left.Type)
+                    : (Expression)rightPreValue;
 
                 // x.Property == "Value"
                 var comparisonExpression = term.ExpressionProvider.GetComparison(left,term.Operator,right);
