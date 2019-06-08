@@ -63,32 +63,39 @@ To activate and make Jquery DataTable communicate with asp.net core backend,
     PM> Install-Package JqueryDataTables.ServerSide.AspNetCoreWeb
 
 # Startup.cs
-    public void ConfigureServices(IServiceCollection services)
-    {
-        services.AddMvc();
-        services.AddSession();
-        services.AddJqueryDataTables();
-        services.AddAutoMapper(typeof(Startup));
-    }
+
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddMvc();
+    services.AddSession();
+    services.AddJqueryDataTables();
+    services.AddAutoMapper(typeof(Startup));
+}
+```
     
 **Please note:** `services.AddSession()` is is required only if you're using excel export functionality in Jquery DataTables.
     
 # Tag Helpers
 Add a **JqueryDataTables TagHelper** reference to your `_ViewImports.cshtml` file as shown below
 
-    @addTagHelper *, JqueryDataTables.ServerSide.AspNetCoreWeb
+```c#
+@addTagHelper *, JqueryDataTables.ServerSide.AspNetCoreWeb
+```
 
 # Table HTML
 >I have written `<jquery-datatables>` TagHelper to do the heavy lifting works for you.
 
-    <jquery-datatables id="fingers10"
-                       class="table table-sm table-dark table-bordered table-hover"
-                       model="@Model"
-                       thead-class="text-center"
-                       enable-searching="true"
-                       search-row-th-class="p-0"
-                       search-input-class="form-control form-control-sm">
-    </jquery-datatables>
+```c#
+<jquery-datatables id="fingers10"
+                   class="table table-sm table-dark table-bordered table-hover"
+                   model="@Model"
+                   thead-class="text-center"
+                   enable-searching="true"
+                   search-row-th-class="p-0"
+                   search-input-class="form-control form-control-sm">
+</jquery-datatables>
+```
 
 ## TagHelpers Attributes
 * `id` - to add id to the html table
@@ -108,160 +115,166 @@ Add a **JqueryDataTables TagHelper** reference to your `_ViewImports.cshtml` fil
 
 ## AJAX POST Configuration
 
-    var table = $('#fingers10').DataTable({
-            language: {
-                processing: "Loading Data...",
-                zeroRecords: "No matching records found"
-            },
-            processing: true,
-            serverSide: true,
-            orderCellsTop: true,
-            autoWidth: true,
-            deferRender: true,
-            lengthMenu: [5, 10, 15, 20],
-            dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6 text-right"l>><"row"<"col-sm-12"tr>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-            buttons: [
-                {
-                    text: 'Export to Excel',
-                    className: 'btn btn-sm btn-dark',
-                    action: function (e, dt, node, config) {
-                        window.location.href = "/Home/GetExcel";
-                    },
-                    init: function (api, node, config) {
-                        $(node).removeClass('dt-button');
-                    }
-                }
-            ],
-            ajax: {
-                type: "POST",
-                url: '/Home/LoadTable/',
-                contentType: "application/json; charset=utf-8",
-                async: true,
-                headers: {
-                    "XSRF-TOKEN": document.querySelector('[name="__RequestVerificationToken"]').value
+```js
+var table = $('#fingers10').DataTable({
+        language: {
+            processing: "Loading Data...",
+            zeroRecords: "No matching records found"
+        },
+        processing: true,
+        serverSide: true,
+        orderCellsTop: true,
+        autoWidth: true,
+        deferRender: true,
+        lengthMenu: [5, 10, 15, 20],
+        dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6 text-right"l>><"row"<"col-sm-12"tr>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        buttons: [
+            {
+                text: 'Export to Excel',
+                className: 'btn btn-sm btn-dark',
+                action: function (e, dt, node, config) {
+                    window.location.href = "/Home/GetExcel";
                 },
-                data: function (data) {
-                    let additionalValues = [];
-                    additionalValues[0] = "Additional Parameters 1";
-                    additionalValues[1] = "Additional Parameters 2";
-                    data.AdditionalValues = additionalValues;
+                init: function (api, node, config) {
+                    $(node).removeClass('dt-button');
+                }
+            }
+        ],
+        ajax: {
+            type: "POST",
+            url: '/Home/LoadTable/',
+            contentType: "application/json; charset=utf-8",
+            async: true,
+            headers: {
+                "XSRF-TOKEN": document.querySelector('[name="__RequestVerificationToken"]').value
+            },
+            data: function (data) {
+                let additionalValues = [];
+                additionalValues[0] = "Additional Parameters 1";
+                additionalValues[1] = "Additional Parameters 2";
+                data.AdditionalValues = additionalValues;
 
-                    return JSON.stringify(data);
-                }
+                return JSON.stringify(data);
+            }
+        },
+        columns: [
+            {
+                data: "Id",
+                name: "eq",
+                visible: false,
+                searchable: false
             },
-            columns: [
-                {
-                    data: "Id",
-                    name: "eq",
-                    visible: false,
-                    searchable: false
+            {
+                data: "Name",
+                name: "eq"
+            },
+            {
+                data: "Position",
+                name: "co"
+            },
+            {
+                data: "Office",
+                name: "eq"
+            },
+            {
+                data: "Extn",
+                name: "eq"
+            },
+            {
+                data: "StartDate",
+                render: function (data, type, row) {
+                    return window.moment(data).format("DD/MM/YYYY");
                 },
-                {
-                    data: "Name",
-                    name: "eq"
-                },
-                {
-                    data: "Position",
-                    name: "co"
-                },
-                {
-                    data: "Office",
-                    name: "eq"
-                },
-                {
-                    data: "Extn",
-                    name: "eq"
-                },
-                {
-                    data: "StartDate",
-                    render: function (data, type, row) {
-                        return window.moment(data).format("DD/MM/YYYY");
-                    },
-                    name: "gt"
-                },
-                {
-                    data: "Salary",
-                    name: "lte"
-                }
-            ]
-        });
+                name: "gt"
+            },
+            {
+                data: "Salary",
+                name: "lte"
+            }
+        ]
+    });
+```
 
 ## AJAX GET Configuration
 
 For AJAX GET configuration, simply change the `ajax` and `buttons` options as follows,
 
-    buttons: [
-                {
-                    text: 'Export to Excel',
-                    className: 'btn btn-sm btn-dark',
-                    action: function (e, dt, node, config) {
-                        var data = table.ajax.params();
-                        var x = JSON.stringify(data, null, 4);
-                        window.location.href = "/Home/GetExcel?" + $.param(data);
-                    },
-                    init: function (api, node, config) {
-                        $(node).removeClass('dt-button');
-                    }
+```js
+buttons: [
+            {
+                text: 'Export to Excel',
+                className: 'btn btn-sm btn-dark',
+                action: function (e, dt, node, config) {
+                    var data = table.ajax.params();
+                    var x = JSON.stringify(data, null, 4);
+                    window.location.href = "/Home/GetExcel?" + $.param(data);
+                },
+                init: function (api, node, config) {
+                    $(node).removeClass('dt-button');
                 }
-            ],
-    ajax: {
-                url: '/Home/LoadTable/',
-                data: function (data) {
-                    return $.extend({}, data, {
-                        "additionalValues[0]": "Additional Parameters 1",
-                        "additionalValues[1]": "Additional Parameters 2"
-                    });
-                }
-           }
-
+            }
+        ],
+ajax: {
+            url: '/Home/LoadTable/',
+            data: function (data) {
+                return $.extend({}, data, {
+                    "additionalValues[0]": "Additional Parameters 1",
+                    "additionalValues[1]": "Additional Parameters 2"
+                });
+            }
+       }
+```
 
  # Trigger Search 
 >Add the following script to trigger search only onpress of **Enter Key**.
 
-    table.columns().every(function (index) {
-            $('#fingers10 thead tr:last th:eq(' + index + ') input')
-                .on('keyup',
-                    function (e) {
-                        if (e.keyCode === 13) {
-                            table.column($(this).parent().index() + ':visible').search(this.value).draw();
-                        }
-                    });
-        });
+```js
+table.columns().every(function (index) {
+        $('#fingers10 thead tr:last th:eq(' + index + ') input')
+            .on('keyup',
+                function (e) {
+                    if (e.keyCode === 13) {
+                        table.column($(this).parent().index() + ':visible').search(this.value).draw();
+                    }
+                });
+    });
+```
 
 # Model to be passed to DataTable
 >Decorate the properties based on their data types
 
-    public class Demo
-    {
-        public int Id { get; set; }
+```c#
+public class Demo
+{
+    public int Id { get; set; }
 
-        [SearchableString]
-        [Sortable(Default = true)]
-        public string Name { get; set; }
+    [SearchableString]
+    [Sortable(Default = true)]
+    public string Name { get; set; }
 
-        [SearchableString]
-        [Sortable]
-        public string Position { get; set; }
+    [SearchableString]
+    [Sortable]
+    public string Position { get; set; }
 
-        [SearchableString]
-        [Sortable]
-        public string Office { get; set; }
+    [SearchableString]
+    [Sortable]
+    public string Office { get; set; }
 
-        [SearchableInt]
-        [Sortable]
-        [DisplayName("Extension")]
-        public int Extn { get; set; }
+    [SearchableInt]
+    [Sortable]
+    [DisplayName("Extension")]
+    public int Extn { get; set; }
 
-        [SearchableDateTime]
-        [Sortable]
-        [DisplayName("Start Date")]
-        public DateTime StartDate { get; set; }
+    [SearchableDateTime]
+    [Sortable]
+    [DisplayName("Start Date")]
+    public DateTime StartDate { get; set; }
 
-        [SearchableLong]
-        [Sortable]
-        public long Salary { get; set; }
-    }
-
+    [SearchableLong]
+    [Sortable]
+    public long Salary { get; set; }
+}
+```
     
 # ActionMethod/PageHandler
 >On DataTable's AJAX Request, `JqueryDataTablesParameters` will read the DataTable's state and `JqueryDataTablesResult<T>` will accept `IEnumerable<T>` response data to be returned back to table as `JsonResult`.
@@ -269,130 +282,142 @@ For AJAX GET configuration, simply change the `ajax` and `buttons` options as fo
 ## AJAX POST Configuration
 
 ### ActionMethod
-    [HttpPost]
-    public async Task<IActionResult> LoadTable([FromBody]JqueryDataTablesParameters param)
-    {
-        try
-        {
-            // `param` is stored in session to be used for excel export. This is required only for AJAX POST.
-            // Below session storage line can be removed if you're not using excel export functionality. 
-            HttpContext.Session.SetString(nameof(JqueryDataTablesParameters),JsonConvert.SerializeObject(param));
-            var results = await _demoService.GetDataAsync(param);
 
-            return new JsonResult(new JqueryDataTablesResult<Demo> {
-                Draw = param.Draw,
-                Data = results.Items,
-                RecordsFiltered = results.TotalSize,
-                RecordsTotal = results.TotalSize
-            });
-        } catch(Exception e)
-        {
-            Console.Write(e.Message);
-            return new JsonResult(new { error = "Internal Server Error" });
-        }
+```c#
+[HttpPost]
+public async Task<IActionResult> LoadTable([FromBody]JqueryDataTablesParameters param)
+{
+    try
+    {
+        // `param` is stored in session to be used for excel export. This is required only for AJAX POST.
+        // Below session storage line can be removed if you're not using excel export functionality. 
+        HttpContext.Session.SetString(nameof(JqueryDataTablesParameters),JsonConvert.SerializeObject(param));
+        var results = await _demoService.GetDataAsync(param);
+
+        return new JsonResult(new JqueryDataTablesResult<Demo> {
+            Draw = param.Draw,
+            Data = results.Items,
+            RecordsFiltered = results.TotalSize,
+            RecordsTotal = results.TotalSize
+        });
+    } catch(Exception e)
+    {
+        Console.Write(e.Message);
+        return new JsonResult(new { error = "Internal Server Error" });
     }
-    
+}
+```
+
 ### PageHandler
-    public async Task<IActionResult> OnPostLoadTableAsync([FromBody]JqueryDataTablesParameters param)
-    {
-        try
-        {
-            // `param` is stored in session to be used for excel export. This is required only for AJAX POST.
-            // Below session storage line can be removed if you're not using excel export functionality. 
-            HttpContext.Session.SetString(nameof(JqueryDataTablesParameters),JsonConvert.SerializeObject(param));
-            var results = await _demoService.GetDataAsync(param);
 
-            return new JsonResult(new JqueryDataTablesResult<Demo> {
-                Draw = param.Draw,
-                Data = results.Items,
-                RecordsFiltered = results.TotalSize,
-                RecordsTotal = results.TotalSize
-            });
-        } catch(Exception e)
-        {
-            Console.Write(e.Message);
-            return new JsonResult(new { error = "Internal Server Error" });
-        }
+```c#
+public async Task<IActionResult> OnPostLoadTableAsync([FromBody]JqueryDataTablesParameters param)
+{
+    try
+    {
+        // `param` is stored in session to be used for excel export. This is required only for AJAX POST.
+        // Below session storage line can be removed if you're not using excel export functionality. 
+        HttpContext.Session.SetString(nameof(JqueryDataTablesParameters),JsonConvert.SerializeObject(param));
+        var results = await _demoService.GetDataAsync(param);
+
+        return new JsonResult(new JqueryDataTablesResult<Demo> {
+            Draw = param.Draw,
+            Data = results.Items,
+            RecordsFiltered = results.TotalSize,
+            RecordsTotal = results.TotalSize
+        });
+    } catch(Exception e)
+    {
+        Console.Write(e.Message);
+        return new JsonResult(new { error = "Internal Server Error" });
     }
-    
+}
+```
+
 ## AJAX GET Configuration
 
 ### ActionMethod
-    public async Task<IActionResult> LoadTable(JqueryDataTablesParameters param)
-    {
-        try
-        {
-            var results = await _demoService.GetDataAsync(param);
 
-            return new JsonResult(new JqueryDataTablesResult<Demo> {
-                Draw = param.Draw,
-                Data = results.Items,
-                RecordsFiltered = results.TotalSize,
-                RecordsTotal = results.TotalSize
-            });
-        } catch(Exception e)
-        {
-            Console.Write(e.Message);
-            return new JsonResult(new { error = "Internal Server Error" });
-        }
+```c#
+public async Task<IActionResult> LoadTable(JqueryDataTablesParameters param)
+{
+    try
+    {
+        var results = await _demoService.GetDataAsync(param);
+
+        return new JsonResult(new JqueryDataTablesResult<Demo> {
+            Draw = param.Draw,
+            Data = results.Items,
+            RecordsFiltered = results.TotalSize,
+            RecordsTotal = results.TotalSize
+        });
+    } catch(Exception e)
+    {
+        Console.Write(e.Message);
+        return new JsonResult(new { error = "Internal Server Error" });
     }
-    
+}
+```
+
 ### PageHandler
-    public async Task<IActionResult> OnGetLoadTableAsync(JqueryDataTablesParameters param)
+
+```c#
+public async Task<IActionResult> OnGetLoadTableAsync(JqueryDataTablesParameters param)
+{
+    try
     {
-        try
-        {
-            var results = await _demoService.GetDataAsync(param);
+        var results = await _demoService.GetDataAsync(param);
 
-            return new JsonResult(new JqueryDataTablesResult<Demo> {
-                Draw = param.Draw,
-                Data = results.Items,
-                RecordsFiltered = results.TotalSize,
-                RecordsTotal = results.TotalSize
-            });
-        } catch(Exception e)
-        {
-            Console.Write(e.Message);
-            return new JsonResult(new { error = "Internal Server Error" });
-        }
+        return new JsonResult(new JqueryDataTablesResult<Demo> {
+            Draw = param.Draw,
+            Data = results.Items,
+            RecordsFiltered = results.TotalSize,
+            RecordsTotal = results.TotalSize
+        });
+    } catch(Exception e)
+    {
+        Console.Write(e.Message);
+        return new JsonResult(new { error = "Internal Server Error" });
     }
-
+}
+```
 # Multiple Column Searching and Sorting
 >Inject Automapper `IConfigurationProvider` to make use of `ProjectTo<T>` before returning the data. Inside the Data Access Method, create `IQueryable<TEntity>` to hold the query. Now, to perform dynamic multiple column **searching** create a instance of Search Processor `new SearchOptionsProcessor<T,TEntity>()` and call the `Apply()` function with query and table columns as parameters. Again for dynamic multiple column **sorting**, create a instance of Sort Processor `new SortOptionsProcessor<T,TEntity>()` and call the `Apply()` function with query and table as parameters. To implement **pagination**, make use of `Start` and `Length` from table parameter and return the result as `JqueryDataTablesPagedResults`.
-    
-    public class DefaultDemoService:IDemoService
+
+```c#    
+public class DefaultDemoService:IDemoService
+{
+    private readonly Fingers10DbContext _context;
+    private readonly IConfigurationProvider _mappingConfiguration;
+
+    public DefaultDemoService(Fingers10DbContext context,IConfigurationProvider mappingConfiguration)
     {
-        private readonly Fingers10DbContext _context;
-        private readonly IConfigurationProvider _mappingConfiguration;
-
-        public DefaultDemoService(Fingers10DbContext context,IConfigurationProvider mappingConfiguration)
-        {
-            _context = context;
-            _mappingConfiguration = mappingConfiguration;
-        }
-
-        public async Task<JqueryDataTablesPagedResults<Demo>> GetDataAsync(JqueryDataTablesParameters table)
-        {
-            IQueryable<DemoEntity> query = _context.Demos;
-            query = new SearchOptionsProcessor<Demo,DemoEntity>().Apply(query,table.Columns);
-            query = new SortOptionsProcessor<Demo,DemoEntity>().Apply(query,table);
-
-            var size = await query.CountAsync();
-
-            var items = await query
-                .AsNoTracking()
-                .Skip((table.Start / table.Length) * table.Length)
-                .Take(table.Length)
-                .ProjectTo<Demo>(_mappingConfiguration)
-                .ToArrayAsync();
-
-            return new JqueryDataTablesPagedResults<Demo> {
-                Items = items,
-                TotalSize = size
-            };
-        }
+        _context = context;
+        _mappingConfiguration = mappingConfiguration;
     }
-    
+
+    public async Task<JqueryDataTablesPagedResults<Demo>> GetDataAsync(JqueryDataTablesParameters table)
+    {
+        IQueryable<DemoEntity> query = _context.Demos;
+        query = new SearchOptionsProcessor<Demo,DemoEntity>().Apply(query,table.Columns);
+        query = new SortOptionsProcessor<Demo,DemoEntity>().Apply(query,table);
+
+        var size = await query.CountAsync();
+
+        var items = await query
+            .AsNoTracking()
+            .Skip((table.Start / table.Length) * table.Length)
+            .Take(table.Length)
+            .ProjectTo<Demo>(_mappingConfiguration)
+            .ToArrayAsync();
+
+        return new JqueryDataTablesPagedResults<Demo> {
+            Items = items,
+            TotalSize = size
+        };
+    }
+}
+ ```   
  **Please note:** If you are having DataAccessLogic in a separate project, the create instance of `SearchOptionsProcessor` and `SortOptionsProcessor` inside **ActionMethod/Handler** and pass it as a parameter to Data Access Logic.
  
  # Excel Export
@@ -403,42 +428,54 @@ For AJAX GET configuration, simply change the `ajax` and `buttons` options as fo
  ## AJAX POST Configuration
  
  ### Action Method
-     public async Task<IActionResult> GetExcel()
-     {
-        // Here we will be getting the param that we have stored in the session in server side action method/page handler
-        // and deserialize it to get the required data.
-        var param = HttpContext.Session.GetString(nameof(JqueryDataTablesParameters));
+ 
+ ```c#
+ public async Task<IActionResult> GetExcel()
+ {
+    // Here we will be getting the param that we have stored in the session in server side action method/page handler
+    // and deserialize it to get the required data.
+    var param = HttpContext.Session.GetString(nameof(JqueryDataTablesParameters));
 
-        var results = await _demoService.GetDataAsync(JsonConvert.DeserializeObject<JqueryDataTablesParameters>(param));
-        return new JqueryDataTablesExcelResult<Demo>(results.Items,"Demo Sheet Name","Fingers10");
-     }
-     
+    var results = await _demoService.GetDataAsync(JsonConvert.DeserializeObject<JqueryDataTablesParameters>(param));
+    return new JqueryDataTablesExcelResult<Demo>(results.Items,"Demo Sheet Name","Fingers10");
+ }
+  ```   
+  
   ### Page Handler
-     public async Task<IActionResult> OnGetExcelAsync()
-     {
-        // Here we will be getting the param that we have stored in the session in server side action method/page handler
-        // and deserialize it to get the required data.
-        var param = HttpContext.Session.GetString(nameof(JqueryDataTablesParameters));
+  
+  ```c#
+ public async Task<IActionResult> OnGetExcelAsync()
+ {
+    // Here we will be getting the param that we have stored in the session in server side action method/page handler
+    // and deserialize it to get the required data.
+    var param = HttpContext.Session.GetString(nameof(JqueryDataTablesParameters));
 
-        var results = await _demoService.GetDataAsync(JsonConvert.DeserializeObject<JqueryDataTablesParameters>(param));
-        return new JqueryDataTablesExcelResult<Demo>(results.Items,"Demo Sheet Name","Fingers10");
-     }
-     
+    var results = await _demoService.GetDataAsync(JsonConvert.DeserializeObject<JqueryDataTablesParameters>(param));
+    return new JqueryDataTablesExcelResult<Demo>(results.Items,"Demo Sheet Name","Fingers10");
+ }
+ ```   
+ 
  ## AJAX GET Configuration
  
  ### Action Method
-     public async Task<IActionResult> GetExcel(JqueryDataTablesParameters param)
-     {
-         var results = await _demoService.GetDataAsync(param);
-         return new JqueryDataTablesExcelResult<Demo>(results.Items,"Demo Sheet Name","Fingers10");
-     }
+ 
+```c#
+public async Task<IActionResult> GetExcel(JqueryDataTablesParameters param)
+{
+    var results = await _demoService.GetDataAsync(param);
+    return new JqueryDataTablesExcelResult<Demo>(results.Items,"Demo Sheet Name","Fingers10");
+}
+```
  
  ### Page Handler
-     public async Task<IActionResult> OnGetExcelAsync(JqueryDataTablesParameters param)
-     {
-         var results = await _demoService.GetDataAsync(param);
-         return new JqueryDataTablesExcelResult<Demo>(results.Items,"Demo Sheet Name","Fingers10");
-     }
+ 
+```c#
+public async Task<IActionResult> OnGetExcelAsync(JqueryDataTablesParameters param)
+{
+    var results = await _demoService.GetDataAsync(param);
+    return new JqueryDataTablesExcelResult<Demo>(results.Items,"Demo Sheet Name","Fingers10");
+}
+```
  
  **Please note:** `GetExcel` **ActionMethod/Handler** name must match the name you define in the excel export action click in your Jquery DataTable Initialization script.
  
