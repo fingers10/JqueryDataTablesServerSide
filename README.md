@@ -68,7 +68,7 @@ To activate and make Jquery DataTable communicate with asp.net core backend,
         services.AddMvc();
         services.AddSession();
         services.AddJqueryDataTables();
-        services.AddAutoMapper(options => options.AddProfile<MappingProfile>());
+        services.AddAutoMapper(typeof(Startup));
     }
     
 **Please note:** `services.AddSession()` is is required only if you're using excel export functionality in Jquery DataTables.
