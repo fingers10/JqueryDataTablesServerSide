@@ -457,6 +457,7 @@ For AJAX GET configuration, simply change the `ajax` and `buttons` options as fo
  
  # Other Nuget Packages Used
  * ClosedXML (0.94.2) - For Generating Excel Files
+ * Microsoft.AspNetCore.Mvc (2.2.0) - For using MVC stuffs
  
  # Author
  * **Abdul Rahman** - Software Developer - from India. Software Consultant, Architect, Freelance Lecturer/Developer and Web Geek.  
