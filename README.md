@@ -60,7 +60,9 @@ Well... there are lots of different approaches how to get a Jquery DataTables wi
 # Usage:
 To activate and make Jquery DataTable communicate with asp.net core backend,
 
-    PM> Install-Package JqueryDataTables.ServerSide.AspNetCoreWeb
+```c#
+PM> Install-Package JqueryDataTables.ServerSide.AspNetCoreWeb
+```
 
 # Startup.cs
 
