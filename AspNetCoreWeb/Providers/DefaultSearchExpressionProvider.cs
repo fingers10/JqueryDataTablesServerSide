@@ -19,7 +19,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Providers
             return Expression.Constant(input);
         }
 
-        public virtual Expression GetComparison(MemberExpression left,string op,ConstantExpression right)
+        public virtual Expression GetComparison(MemberExpression left,string op,Expression right)
         {
             switch(op.ToLower())
             {

@@ -3,6 +3,7 @@ using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
@@ -88,8 +89,17 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 
                 // x.Property
                 var left = ExpressionHelper.GetPropertyExpression(obj,propertyInfo);
+                // read this!!!!
+                // http://askjonskeet.azurewebsites.net/answer/28476847/How-to-get-Expression-for-Nullable-values-(-fields-)-without-converting-from-ExpressionConvert-in-C
+                // 
+
                 // "Value"
-                var right = term.ExpressionProvider.GetValue(term.Value);
+                //var right = term.ExpressionProvider.GetValue(term.Value);
+                var rightPreValue = term.ExpressionProvider.GetValue(term.Value);
+
+                var right = rightPreValue.Type != left.Type
+                    ? (Expression)Expression.Convert(rightPreValue, left.Type)
+                    : (Expression)rightPreValue;
 
                 // x.Property == "Value"
                 var comparisonExpression = term.ExpressionProvider.GetComparison(left,term.Operator,right);

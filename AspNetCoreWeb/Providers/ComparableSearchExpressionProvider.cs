@@ -24,7 +24,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Providers
                         });
         }
 
-        public override Expression GetComparison(MemberExpression left,string op,ConstantExpression right)
+        public override Expression GetComparison(MemberExpression left,string op,Expression right)
         {
             switch(op.ToLower())
             {

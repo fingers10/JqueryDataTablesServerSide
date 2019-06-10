@@ -9,9 +9,14 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Contracts
 
         ConstantExpression GetValue(string input);
 
+        //Expression GetComparison(
+        //    MemberExpression left,
+        //    string op,
+        //    ConstantExpression right);
+
         Expression GetComparison(
             MemberExpression left,
             string op,
-            ConstantExpression right);
+            Expression right);
     }
 }
