@@ -8,9 +8,9 @@
 [![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](https://GitHub.com/fingers10/JqueryDataTablesServerSide)
 [![HitCount](http://hits.dwyl.io/fingers10/badges.svg)](http://hits.dwyl.io/fingers10/badges)
 
-[![GitHub forks](https://img.shields.io/github/forks/fingers10/JqueryDataTablesServerSide.svg?style=social&label=Fork&maxAge=2592000)](https://GitHub.com/fingers10/JqueryDataTablesServerSide/network/)
-[![GitHub stars](https://img.shields.io/github/stars/fingers10/JqueryDataTablesServerSide.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/fingers10/JqueryDataTablesServerSide/stargazers/)
-[![GitHub followers](https://img.shields.io/github/followers/fingers10.svg?style=social&label=Follow&maxAge=2592000)](https://github.com/fingers10?tab=followers)
+[![GitHub forks](https://img.shields.io/github/forks/fingers10/JqueryDataTablesServerSide.svg?style=social&label=Fork)](https://GitHub.com/fingers10/JqueryDataTablesServerSide/network/)
+[![GitHub stars](https://img.shields.io/github/stars/fingers10/JqueryDataTablesServerSide.svg?style=social&label=Star)](https://GitHub.com/fingers10/JqueryDataTablesServerSide/stargazers/)
+[![GitHub followers](https://img.shields.io/github/followers/fingers10.svg?style=social&label=Follow)](https://github.com/fingers10?tab=followers)
 
 [![GitHub contributors](https://img.shields.io/github/contributors/fingers10/JqueryDataTablesServerSide.svg)](https://GitHub.com/fingers10/JqueryDataTablesServerSide/graphs/contributors/)
 [![GitHub issues](https://img.shields.io/github/issues/fingers10/JqueryDataTablesServerSide.svg)](https://GitHub.com/fingers10/JqueryDataTablesServerSide/issues/)
