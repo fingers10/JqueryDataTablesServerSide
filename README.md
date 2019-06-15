@@ -57,7 +57,7 @@ Well... there are lots of different approaches how to get a Jquery DataTables wi
 ![Compatibility Chart](https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Icons/compatibility-chart.PNG)
 
 # NuGet:
-* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v2.0.0**
+* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v2.1.0**
 
 # Usage:
 To activate and make Jquery DataTable communicate with asp.net core backend,
@@ -485,7 +485,6 @@ public async Task<IActionResult> OnGetExcelAsync(JqueryDataTablesParameters para
  
  # Coming Soon
  JqueryDataTablesServerSide is actively under development and I plan to have even more useful features implemented soon, including:
- * Nullable Search/Sort
  * Complex Search/Sort
  
  Get in touch if there are any features you feel JqueryDataTablesServerSide needs.
