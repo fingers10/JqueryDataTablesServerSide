@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using JqueryDataTables.ServerSide.AspNetCoreWeb.Attributes;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
@@ -56,7 +58,12 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
                 headerRow.AppendLine($"<th>{column}</th>");
 
                 if (!EnableSearching) continue;
-                searchRow.AppendLine($@"<th class=""{SearchRowThClass}""><span class=""sr-only"">{column}</span><input type=""search"" style=""{SearchInputStyle}"" class=""{SearchInputClass}"" placeholder=""{SearchInputPlaceholder.Replace("{{name}}", column)}"" aria-label=""{column}"" /></th>");
+                searchRow.AppendLine($@"<th class=""{SearchRowThClass}""><span class=""sr-only"">{column}</span>");
+				if (prop.Attributes.OfType<SearchableAttribute>().Any())
+				{ 
+					searchRow.AppendLine($@"<input type=""search"" style=""{SearchInputStyle}"" class=""{SearchInputClass}"" placeholder=""{SearchInputPlaceholder.Replace("{{name}}", column)}"" aria-label=""{column}"" />");
+				}
+				searchRow.AppendLine($@"</th>");
             }
 
             headerRow.AppendLine("</tr>");
