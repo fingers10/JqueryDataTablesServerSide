@@ -16,10 +16,6 @@
 [![GitHub issues](https://img.shields.io/github/issues/fingers10/JqueryDataTablesServerSide.svg)](https://GitHub.com/fingers10/JqueryDataTablesServerSide/issues/)
 [![GitHub issues-closed](https://img.shields.io/github/issues-closed/fingers10/JqueryDataTablesServerSide.svg)](https://GitHub.com/fingers10/JqueryDataTablesServerSide/issues?q=is%3Aissue+is%3Aclosed)
 
->**I'm happy to help you with my Nuget Package. Please support and encouarge me to develop more stuffs like this.**
-
-**Donate via  [![Donate via PayPal](https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png)](https://paypal.me/arsmsi)**
-
 # Jquery DataTables Asp.Net Core Server Side
 This repository is a Server Side processor for Jquery DataTables with Asp.Net Core as backend. It provides a quick way to implement dynamic multiple column searching and sorting along with pagination and excel export at the server side. This can be done by decorating your model properties with simple attributes.
 
@@ -62,8 +58,14 @@ Well... there are lots of different approaches how to get a Jquery DataTables wi
 # Usage:
 To activate and make Jquery DataTable communicate with asp.net core backend,
 
+## Package Manager:
 ```c#
 PM> Install-Package JqueryDataTables.ServerSide.AspNetCoreWeb
+```
+
+## .NET CLI:
+```c#
+> dotnet add package JqueryDataTables.ServerSide.AspNetCoreWeb
 ```
 
 # Startup.cs
@@ -510,7 +512,5 @@ public async Task<IActionResult> OnGetExcelAsync(JqueryDataTablesParameters para
 
  Enjoy!
 
- # Support & Donate
- > **I'm happy to help you with my Nuget Package. Please support and encouarge me to develop more stuffs like this.**
-
- **Donate via  [![Donate via PayPal](https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png)](https://paypal.me/arsmsi)**
+ # Sponsors/Backers
+ I'm happy to help you with my Nuget Package. Support this project by becoming a sponsor/backer. Your logo will show up here with a link to your website. Sponsor/Back via  [![Sponsor via PayPal](https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png)](https://paypal.me/arsmsi)
