@@ -1,5 +1,10 @@
-﻿using Microsoft.AspNetCore.Razor.TagHelpers;
-using System.ComponentModel;
+﻿using JqueryDataTables.ServerSide.AspNetCoreWeb.Attributes;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
@@ -31,8 +36,6 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
 
             output.PreContent.SetHtmlContent($@"<thead class=""{TheadClass}"">");
 
-            var properties = TypeDescriptor.GetProperties(Model.GetType());
-
             var headerRow = new StringBuilder();
             var searchRow = new StringBuilder();
 
@@ -43,13 +46,17 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
                 searchRow.AppendLine("<tr>");
             }
 
-            foreach(PropertyDescriptor prop in properties)
-            {
-                var column = prop.DisplayName ?? prop.Name;
+            var columns = GetColumnsFromModel(Model.GetType());
 
+            foreach(var column in columns)
+            {
                 headerRow.AppendLine($"<th>{column}</th>");
 
-                if (!EnableSearching) continue;
+                if(!EnableSearching)
+                {
+                    continue;
+                }
+
                 searchRow.AppendLine($@"<th class=""{SearchRowThClass}""><span class=""sr-only"">{column}</span><input type=""search"" class=""{SearchInputClass}"" placeholder=""Search {column}"" aria-label=""{column}"" /></th>");
             }
 
@@ -61,6 +68,39 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
 
             output.Content.SetHtmlContent($"{headerRow.ToString()}{searchRow.ToString()}");
             output.PostContent.SetHtmlContent("</thead>");
+        }
+
+        private static IEnumerable<string> GetColumnsFromModel(Type parentClass)
+        {
+            var complexProperties = parentClass.GetTypeInfo()
+                       .DeclaredProperties
+                       .Where(p => p.GetCustomAttributes<NestedSortableAttribute>().Any() || p.GetCustomAttributes<NestedSearchableAttribute>().Any());
+
+            var properties = parentClass.GetTypeInfo()
+                       .DeclaredProperties
+                       .Where(p => p.GetCustomAttributes<SortableAttribute>().Any() || p.GetCustomAttributes<SearchableAttribute>().Any()); ;
+
+            foreach (var prop in properties.Except(complexProperties))
+            {
+                var propertyDescriptor = ExpressionHelper.GetPropertyDescriptor(prop);
+
+                yield return propertyDescriptor.DisplayName ?? propertyDescriptor.Name;
+            }
+
+            if (complexProperties.Any())
+            {
+                foreach (var parentProperty in complexProperties)
+                {
+                    var parentType = parentProperty.PropertyType;
+
+                    var nestedProperties = GetColumnsFromModel(parentType);
+
+                    foreach (var nestedProperty in nestedProperties)
+                    {
+                        yield return nestedProperty;
+                    }
+                }
+            }
         }
     }
 }

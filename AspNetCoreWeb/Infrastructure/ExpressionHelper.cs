@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -19,6 +20,11 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
         {
             var predicate = typeof(Func<,>).MakeGenericType(source,dest);
             return LambdaMethod.MakeGenericMethod(predicate);
+        }
+
+        public static PropertyDescriptor GetPropertyDescriptor(PropertyInfo propertyInfo)
+        {
+            return TypeDescriptor.GetProperties(propertyInfo.DeclaringType).Find(propertyInfo.Name, false);
         }
 
         public static PropertyInfo GetPropertyInfo<T>(string name)
