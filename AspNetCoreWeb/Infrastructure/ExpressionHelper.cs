@@ -33,6 +33,19 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                            .Single(p => p.Name == name);
         }
 
+        public static PropertyInfo GetPropertyInfo(Type parentClass, string name)
+        {
+            if (name.Contains("."))
+            {
+                int index = name.IndexOf(".");
+                var propertyInfo = parentClass.GetProperties().Single(p => p.Name == name.Substring(0, index));
+                return GetPropertyInfo(propertyInfo.PropertyType, name.Substring(index + 1));
+            }
+
+            return parentClass.GetProperties()
+                .Single(p => p.Name == name);
+        }
+
         public static ParameterExpression Parameter<T>()
         {
             return Expression.Parameter(typeof(T));
@@ -41,6 +54,18 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
         public static MemberExpression GetPropertyExpression(ParameterExpression obj,PropertyInfo property)
         {
             return Expression.Property(obj,property);
+        }
+
+        public static MemberExpression GetMemberExpression(Expression param, string propertyName)
+        {
+            if (propertyName.Contains("."))
+            {
+                int index = propertyName.IndexOf(".");
+                var subParam = Expression.Property(param, propertyName.Substring(0, index));
+                return GetMemberExpression(subParam, propertyName.Substring(index + 1));
+            }
+
+            return Expression.Property(param, propertyName);
         }
 
         public static LambdaExpression GetLambda<TSource, TDest>(ParameterExpression obj,Expression arg)

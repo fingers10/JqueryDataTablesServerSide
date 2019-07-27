@@ -26,9 +26,14 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                     continue;
                 }
 
+                var hasNavigation = column.Data.Contains('.');
+                var parentIndex = column.Data.Split('.').Length - 2;
+
                 yield return new SortTerm {
+                    ParentName = hasNavigation ? column.Data.Split('.')[parentIndex] : typeof(T).Name,
                     Name = column.Data,
-                    Descending = term.Dir.Equals(DTOrderDir.DESC)
+                    Descending = term.Dir.Equals(DTOrderDir.DESC),
+                    HasNavigation = hasNavigation
                 };
             }
         }
@@ -41,7 +46,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 yield break;
             }
 
-            var declaredTerms = GetTermsFromModel();
+            var declaredTerms = GetTermsFromModel(typeof(T));
 
             foreach(var term in queryTerms)
             {
@@ -53,10 +58,13 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 }
 
                 yield return new SortTerm {
+                    ParentName = declaredTerm.ParentName,
                     Name = declaredTerm.Name,
+                    ParentEntityName = declaredTerm.ParentEntityName,
                     EntityName = declaredTerm.EntityName,
                     Descending = term.Descending,
-                    Default = declaredTerm.Default
+                    Default = declaredTerm.Default,
+                    HasNavigation = declaredTerm.HasNavigation
                 };
             }
         }
@@ -75,14 +83,16 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             foreach(var term in terms)
             {
                 var propertyInfo = ExpressionHelper
-                    .GetPropertyInfo<TEntity>(term.EntityName ?? term.Name);
+                    .GetPropertyInfo(typeof(TEntity),term.EntityName ?? term.Name);
                 var obj = ExpressionHelper.Parameter<TEntity>();
 
                 // Build up the LINQ Expression backwards:
                 // query = query.OrderBy(x => x.Property);
+                // If it has navigation then:
+                // query = query.OrderBy(x => x.ParentProperty.Property)
 
                 // x => x.Property
-                var key = ExpressionHelper.GetPropertyExpression(obj,propertyInfo);
+                var key = ExpressionHelper.GetMemberExpression(obj, term.EntityName ?? term.Name);
                 var keySelector = ExpressionHelper.GetLambda(typeof(TEntity),propertyInfo.PropertyType,obj,key);
 
                 // query.OrderBy/ThenBy[Descending](x => x.Property)
@@ -95,19 +105,47 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             return modifiedQuery;
         }
 
-        private static IEnumerable<SortTerm> GetTermsFromModel()
+        private static IEnumerable<SortTerm> GetTermsFromModel(
+            Type parentSortClass,
+            string parentsName = null,
+            bool hasNavigation = false)
         {
-            return typeof(T).GetTypeInfo()
-                           .DeclaredProperties
-                           .Where(p => p.GetCustomAttributes<SortableAttribute>().Any())
-                           .Select(p => {
-                               var attribute = p.GetCustomAttribute<SortableAttribute>();
-                               return new SortTerm {
-                                   Name = p.Name,
-                                   EntityName = attribute.EntityProperty,
-                                   Default = attribute.Default
-                               };
-                           });
+            var properties = parentSortClass.GetTypeInfo()
+                .DeclaredProperties
+                .Where(p => p.GetCustomAttributes<SortableAttribute>().Any());
+
+            foreach (var p in properties)
+            {
+                var attribute = p.GetCustomAttribute<SortableAttribute>();
+
+                yield return new SortTerm
+                {
+                    ParentName = parentSortClass.Name,
+                    Name = hasNavigation ? $"{parentsName}.{p.Name}" : p.Name,
+                    EntityName = attribute.EntityProperty,
+                    Default = attribute.Default,
+                    HasNavigation = hasNavigation
+                };
+            }
+
+            var complexSortProperties = parentSortClass.GetTypeInfo()
+                .DeclaredProperties
+                .Where(p => p.GetCustomAttributes<NestedSortableAttribute>().Any());
+
+            if (complexSortProperties.Any())
+            {
+                foreach (var parentProperty in complexSortProperties)
+                {
+                    var parentType = parentProperty.PropertyType;
+
+                    var complexProperties = GetTermsFromModel(parentType, string.IsNullOrWhiteSpace(parentsName) ? parentType.Name : $"{parentsName}.{parentType.Name}", true);
+
+                    foreach (var complexProperty in complexProperties)
+                    {
+                        yield return complexProperty;
+                    }
+                }
+            }
         }
     }
 }
