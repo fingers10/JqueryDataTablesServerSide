@@ -30,7 +30,6 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 var parentIndex = column.Data.Split('.').Length - 2;
 
                 yield return new SortTerm {
-                    ParentName = hasNavigation ? column.Data.Split('.')[parentIndex] : typeof(T).Name,
                     Name = column.Data,
                     Descending = term.Dir.Equals(DTOrderDir.DESC),
                     HasNavigation = hasNavigation
@@ -58,9 +57,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 }
 
                 yield return new SortTerm {
-                    ParentName = declaredTerm.ParentName,
                     Name = declaredTerm.Name,
-                    ParentEntityName = declaredTerm.ParentEntityName,
                     EntityName = declaredTerm.EntityName,
                     Descending = term.Descending,
                     Default = declaredTerm.Default,
@@ -120,9 +117,8 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 
                 yield return new SortTerm
                 {
-                    ParentName = parentSortClass.Name,
                     Name = hasNavigation ? $"{parentsName}.{p.Name}" : p.Name,
-                    EntityName = attribute.EntityProperty,
+                    EntityName = hasNavigation ? $"{parentsName}.{attribute.EntityProperty ?? p.Name}" : attribute.EntityProperty,
                     Default = attribute.Default,
                     HasNavigation = hasNavigation
                 };

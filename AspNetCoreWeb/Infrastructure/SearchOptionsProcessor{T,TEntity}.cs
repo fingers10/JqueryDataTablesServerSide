@@ -31,7 +31,6 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 
                 yield return new SearchTerm {
                     ValidSyntax = true,
-                    ParentName = hasNavigation ? column.Data.Split('.')[parentIndex] : typeof(T).Name,
                     Name = column.Data,
                     Operator = string.IsNullOrWhiteSpace(column.Name) ? "eq" : column.Name,
                     Value = column.Search.Value.ToLower(),
@@ -64,9 +63,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 
                 yield return new SearchTerm {
                     ValidSyntax = term.ValidSyntax,
-                    ParentName = declaredTerm.ParentName,
                     Name = declaredTerm.Name,
-                    ParentEntityName = declaredTerm.ParentEntityName,
                     EntityName = declaredTerm.EntityName,
                     Operator = term.Operator,
                     Value = term.Value,
@@ -137,9 +134,8 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 
                 yield return new SearchTerm
                 {
-                    ParentName = parentSortClass.Name,
                     Name = hasNavigation ? $"{parentsName}.{p.Name}" : p.Name,
-                    EntityName = attribute.EntityProperty,
+                    EntityName = hasNavigation ? $"{parentsName}.{attribute.EntityProperty ?? p.Name}" : attribute.EntityProperty,
                     ExpressionProvider = attribute.ExpressionProvider,
                     HasNavigation = hasNavigation
                 };
