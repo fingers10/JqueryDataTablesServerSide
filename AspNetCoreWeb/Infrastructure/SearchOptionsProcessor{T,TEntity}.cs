@@ -121,6 +121,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 
         private static IEnumerable<SearchTerm> GetTermsFromModel(
             Type parentSortClass,
+            string parentsEntityName = null,
             string parentsName = null,
             bool hasNavigation = false)
         {
@@ -135,7 +136,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 yield return new SearchTerm
                 {
                     Name = hasNavigation ? $"{parentsName}.{p.Name}" : p.Name,
-                    EntityName = hasNavigation ? $"{parentsName}.{attribute.EntityProperty ?? p.Name}" : attribute.EntityProperty,
+                    EntityName = hasNavigation ? $"{parentsEntityName ?? parentsName}.{attribute.EntityProperty ?? p.Name}" : attribute.EntityProperty,
                     ExpressionProvider = attribute.ExpressionProvider,
                     HasNavigation = hasNavigation
                 };
@@ -150,8 +151,13 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 foreach (var parentProperty in complexSearchProperties)
                 {
                     var parentType = parentProperty.PropertyType;
+                    var parentAttribute = parentProperty.GetCustomAttribute<NestedSearchableAttribute>();
 
-                    var complexProperties = GetTermsFromModel(parentType, string.IsNullOrWhiteSpace(parentsName) ? parentType.Name : $"{parentsName}.{parentType.Name}", true);
+                    var complexProperties = GetTermsFromModel(
+                    parentType, 
+                    string.IsNullOrWhiteSpace(parentsEntityName) ? parentAttribute.ParentEntityProperty ?? parentProperty.Name : $"{parentsEntityName}.{parentAttribute.ParentEntityProperty ?? parentProperty.Name}", 
+                    string.IsNullOrWhiteSpace(parentsName) ? parentProperty.Name : $"{parentsName}.{parentProperty.Name}",
+                    true);
 
                     foreach (var complexProperty in complexProperties)
                     {

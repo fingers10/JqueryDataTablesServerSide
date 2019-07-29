@@ -104,6 +104,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 
         private static IEnumerable<SortTerm> GetTermsFromModel(
             Type parentSortClass,
+            string parentsEntityName = null,
             string parentsName = null,
             bool hasNavigation = false)
         {
@@ -118,7 +119,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 yield return new SortTerm
                 {
                     Name = hasNavigation ? $"{parentsName}.{p.Name}" : p.Name,
-                    EntityName = hasNavigation ? $"{parentsName}.{attribute.EntityProperty ?? p.Name}" : attribute.EntityProperty,
+                    EntityName = hasNavigation ? $"{parentsEntityName ?? parentsName}.{attribute.EntityProperty ?? p.Name}" : attribute.EntityProperty,
                     Default = attribute.Default,
                     HasNavigation = hasNavigation
                 };
@@ -133,8 +134,13 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 foreach (var parentProperty in complexSortProperties)
                 {
                     var parentType = parentProperty.PropertyType;
+                    var parentAttribute = parentProperty.GetCustomAttribute<NestedSortableAttribute>();
 
-                    var complexProperties = GetTermsFromModel(parentType, string.IsNullOrWhiteSpace(parentsName) ? parentType.Name : $"{parentsName}.{parentType.Name}", true);
+                    var complexProperties = GetTermsFromModel(
+                    parentType, 
+                    string.IsNullOrWhiteSpace(parentsEntityName) ? parentAttribute.ParentEntityProperty ?? parentProperty.Name : $"{parentsEntityName}.{parentAttribute.ParentEntityProperty ?? parentProperty.Name}", 
+                    string.IsNullOrWhiteSpace(parentsName) ? parentProperty.Name : $"{parentsName}.{parentProperty.Name}",
+                    true);
 
                     foreach (var complexProperty in complexProperties)
                     {
