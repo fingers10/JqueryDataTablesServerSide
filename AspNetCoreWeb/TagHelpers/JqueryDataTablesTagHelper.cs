@@ -10,8 +10,8 @@ using System.Text;
 
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
 {
-    [HtmlTargetElement("jquery-datatables", Attributes = "id,class,model")]
-    public class JqueryDataTablesTagHelper : TagHelper
+    [HtmlTargetElement("jquery-datatables",Attributes = "id,class,model")]
+    public class JqueryDataTablesTagHelper:TagHelper
     {
         public string Id { get; set; }
         public string Class { get; set; }
@@ -35,11 +35,11 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
         [HtmlAttributeName("search-input-placeholder-prefix")]
         public string SearchInputPlaceholderPrefix { get; set; }
 
-        public override void Process(TagHelperContext context, TagHelperOutput output)
+        public override void Process(TagHelperContext context,TagHelperOutput output)
         {
             output.TagName = "table";
-            output.Attributes.Add("id", Id);
-            output.Attributes.Add("class", Class);
+            output.Attributes.Add("id",Id);
+            output.Attributes.Add("class",Class);
 
             output.PreContent.SetHtmlContent($@"<thead class=""{TheadClass}"">");
 
@@ -48,25 +48,25 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
 
             headerRow.AppendLine("<tr>");
 
-            if (EnableSearching)
+            if(EnableSearching)
             {
                 searchRow.AppendLine("<tr>");
             }
 
             var columns = GetColumnsFromModel(Model.GetType());
 
-            foreach (var column in columns)
+            foreach(var column in columns)
             {
                 headerRow.AppendLine($"<th>{column.Name}</th>");
 
-                if (!EnableSearching)
+                if(!EnableSearching)
                 {
                     continue;
                 }
 
                 searchRow.AppendLine($@"<th class=""{SearchRowThClass}""><span class=""sr-only"">{column.Name}</span>");
 
-                if (column.HasSearch)
+                if(column.HasSearch)
                 {
                     searchRow.AppendLine($@"<input type=""search"" style=""{SearchInputStyle}"" class=""{SearchInputClass}"" placeholder=""{SearchInputPlaceholderPrefix} {column.Name}"" aria-label=""{column.Name}"" />");
                 }
@@ -75,7 +75,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
             }
 
             headerRow.AppendLine("</tr>");
-            if (EnableSearching)
+            if(EnableSearching)
             {
                 searchRow.AppendLine("</tr>");
             }
