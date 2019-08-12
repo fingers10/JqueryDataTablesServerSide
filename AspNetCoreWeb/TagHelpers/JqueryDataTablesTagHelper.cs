@@ -1,5 +1,6 @@
 ﻿using JqueryDataTables.ServerSide.AspNetCoreWeb.Attributes;
 using JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using System;
 using System.Collections.Generic;
@@ -9,8 +10,8 @@ using System.Text;
 
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
 {
-    [HtmlTargetElement("jquery-datatables",Attributes = "id,class,model")]
-    public class JqueryDataTablesTagHelper:TagHelper
+    [HtmlTargetElement("jquery-datatables", Attributes = "id,class,model")]
+    public class JqueryDataTablesTagHelper : TagHelper
     {
         public string Id { get; set; }
         public string Class { get; set; }
@@ -28,11 +29,17 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
         [HtmlAttributeName("search-input-class")]
         public string SearchInputClass { get; set; }
 
-        public override void Process(TagHelperContext context,TagHelperOutput output)
+        [HtmlAttributeName("search-input-style")]
+        public string SearchInputStyle { get; set; }
+
+        [HtmlAttributeName("search-input-placeholder-prefix")]
+        public string SearchInputPlaceholderPrefix { get; set; }
+
+        public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "table";
-            output.Attributes.Add("id",Id);
-            output.Attributes.Add("class",Class);
+            output.Attributes.Add("id", Id);
+            output.Attributes.Add("class", Class);
 
             output.PreContent.SetHtmlContent($@"<thead class=""{TheadClass}"">");
 
@@ -41,27 +48,34 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
 
             headerRow.AppendLine("<tr>");
 
-            if(EnableSearching)
+            if (EnableSearching)
             {
                 searchRow.AppendLine("<tr>");
             }
 
             var columns = GetColumnsFromModel(Model.GetType());
 
-            foreach(var column in columns)
+            foreach (var column in columns)
             {
-                headerRow.AppendLine($"<th>{column}</th>");
+                headerRow.AppendLine($"<th>{column.Name}</th>");
 
-                if(!EnableSearching)
+                if (!EnableSearching)
                 {
                     continue;
                 }
 
-                searchRow.AppendLine($@"<th class=""{SearchRowThClass}""><span class=""sr-only"">{column}</span><input type=""search"" class=""{SearchInputClass}"" placeholder=""Search {column}"" aria-label=""{column}"" /></th>");
+                searchRow.AppendLine($@"<th class=""{SearchRowThClass}""><span class=""sr-only"">{column.Name}</span>");
+
+                if (column.HasSearch)
+                {
+                    searchRow.AppendLine($@"<input type=""search"" style=""{SearchInputStyle}"" class=""{SearchInputClass}"" placeholder=""{SearchInputPlaceholderPrefix} {column.Name}"" aria-label=""{column.Name}"" />");
+                }
+
+                searchRow.AppendLine("</th>");
             }
 
             headerRow.AppendLine("</tr>");
-            if(EnableSearching)
+            if (EnableSearching)
             {
                 searchRow.AppendLine("</tr>");
             }
@@ -70,21 +84,24 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
             output.PostContent.SetHtmlContent("</thead>");
         }
 
-        private static IEnumerable<string> GetColumnsFromModel(Type parentClass)
+        private static IEnumerable<TableColumn> GetColumnsFromModel(Type parentClass)
         {
             var complexProperties = parentClass.GetTypeInfo()
                        .DeclaredProperties
                        .Where(p => p.GetCustomAttributes<NestedSortableAttribute>().Any() || p.GetCustomAttributes<NestedSearchableAttribute>().Any());
 
             var properties = parentClass.GetTypeInfo()
-                       .DeclaredProperties
-                       .Where(p => p.GetCustomAttributes<SortableAttribute>().Any() || p.GetCustomAttributes<SearchableAttribute>().Any()); ;
+                       .DeclaredProperties;
 
             foreach (var prop in properties.Except(complexProperties))
             {
                 var propertyDescriptor = ExpressionHelper.GetPropertyDescriptor(prop);
 
-                yield return propertyDescriptor.DisplayName ?? propertyDescriptor.Name;
+                yield return new TableColumn
+                {
+                    Name = propertyDescriptor.DisplayName ?? propertyDescriptor.Name,
+                    HasSearch = prop.GetCustomAttributes<SearchableAttribute>().Any()
+                };
             }
 
             if (complexProperties.Any())
