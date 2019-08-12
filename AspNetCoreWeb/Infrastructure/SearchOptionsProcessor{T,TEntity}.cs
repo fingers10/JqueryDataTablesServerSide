@@ -26,11 +26,15 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                     continue;
                 }
 
+                var hasNavigation = column.Data.Contains('.');
+                var parentIndex = column.Data.Split('.').Length - 2;
+
                 yield return new SearchTerm {
                     ValidSyntax = true,
                     Name = column.Data,
                     Operator = string.IsNullOrWhiteSpace(column.Name) ? "eq" : column.Name,
-                    Value = column.Search.Value.ToLower()
+                    Value = column.Search.Value.ToLower(),
+                    HasNavigation = hasNavigation
                 };
             }
         }
@@ -46,7 +50,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 yield break;
             }
 
-            var declaredTerms = GetTermsFromModel();
+            var declaredTerms = GetTermsFromModel(typeof(T));
 
             foreach(var term in queryTerms)
             {
@@ -63,7 +67,8 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                     EntityName = declaredTerm.EntityName,
                     Operator = term.Operator,
                     Value = term.Value,
-                    ExpressionProvider = declaredTerm.ExpressionProvider
+                    ExpressionProvider = declaredTerm.ExpressionProvider,
+                    HasNavigation = declaredTerm.HasNavigation
                 };
             }
         }
@@ -81,14 +86,14 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             foreach(var term in terms)
             {
                 var propertyInfo = ExpressionHelper
-                    .GetPropertyInfo<TEntity>(term.EntityName ?? term.Name);
+                    .GetPropertyInfo(typeof(TEntity),term.EntityName ?? term.Name);
                 var obj = ExpressionHelper.Parameter<TEntity>();
 
                 // Build up the LINQ Expression backwards:
                 // query = query.Where(x => x.Property == "Value");
 
                 // x.Property
-                var left = ExpressionHelper.GetPropertyExpression(obj,propertyInfo);
+                var left = ExpressionHelper.GetMemberExpression(obj,term.EntityName ?? term.Name);
                 // read this!!!!
                 // http://askjonskeet.azurewebsites.net/answer/28476847/How-to-get-Expression-for-Nullable-values-(-fields-)-without-converting-from-ExpressionConvert-in-C
                 // 
@@ -114,19 +119,52 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             return modifiedQuery;
         }
 
-        private static IEnumerable<SearchTerm> GetTermsFromModel()
+        private static IEnumerable<SearchTerm> GetTermsFromModel(
+            Type parentSortClass,
+            string parentsEntityName = null,
+            string parentsName = null,
+            bool hasNavigation = false)
         {
-            return typeof(T).GetTypeInfo()
-                                      .DeclaredProperties
-                                      .Where(p => p.GetCustomAttributes<SearchableAttribute>().Any())
-                                      .Select(p => {
-                                          var attribute = p.GetCustomAttribute<SearchableAttribute>();
-                                          return new SearchTerm {
-                                              Name = p.Name,
-                                              EntityName = attribute.EntityProperty,
-                                              ExpressionProvider = attribute.ExpressionProvider
-                                          };
-                                      });
+            var properties = parentSortClass.GetTypeInfo()
+                       .DeclaredProperties
+                       .Where(p => p.GetCustomAttributes<SearchableAttribute>().Any());
+
+            foreach (var p in properties)
+            {
+                var attribute = p.GetCustomAttribute<SearchableAttribute>();
+
+                yield return new SearchTerm
+                {
+                    Name = hasNavigation ? $"{parentsName}.{p.Name}" : p.Name,
+                    EntityName = hasNavigation ? $"{parentsEntityName ?? parentsName}.{attribute.EntityProperty ?? p.Name}" : attribute.EntityProperty,
+                    ExpressionProvider = attribute.ExpressionProvider,
+                    HasNavigation = hasNavigation
+                };
+            }
+
+            var complexSearchProperties = parentSortClass.GetTypeInfo()
+                       .DeclaredProperties
+                       .Where(p => p.GetCustomAttributes<NestedSearchableAttribute>().Any());
+
+            if (complexSearchProperties.Any())
+            {
+                foreach (var parentProperty in complexSearchProperties)
+                {
+                    var parentType = parentProperty.PropertyType;
+                    var parentAttribute = parentProperty.GetCustomAttribute<NestedSearchableAttribute>();
+
+                    var complexProperties = GetTermsFromModel(
+                    parentType, 
+                    string.IsNullOrWhiteSpace(parentsEntityName) ? parentAttribute.ParentEntityProperty ?? parentProperty.Name : $"{parentsEntityName}.{parentAttribute.ParentEntityProperty ?? parentProperty.Name}", 
+                    string.IsNullOrWhiteSpace(parentsName) ? parentProperty.Name : $"{parentsName}.{parentProperty.Name}",
+                    true);
+
+                    foreach (var complexProperty in complexProperties)
+                    {
+                        yield return complexProperty;
+                    }
+                }
+            }
         }
     }
 }

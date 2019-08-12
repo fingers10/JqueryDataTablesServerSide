@@ -6,5 +6,6 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
         public string EntityName { get; set; }
         public bool Descending { get; set; }
         public bool Default { get; set; }
+        public bool HasNavigation { get; set; }
     }
 }

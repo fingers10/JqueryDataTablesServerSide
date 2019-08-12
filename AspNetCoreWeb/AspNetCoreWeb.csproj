@@ -14,11 +14,14 @@
     <PackageTags>JqueryDataTables, Asp.Net Core, Server Side, Multiple Column, Dynamic, Searching, Sorting, Paging, Excel Export</PackageTags>
     <PackageId>JqueryDataTables.ServerSide.AspNetCoreWeb</PackageId>
     <PackageIconUrl>https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Icons/logo.png?raw=true</PackageIconUrl>
-    <Version>2.1.0</Version>
+    <Version>2.2.0</Version>
     <RootNamespace>JqueryDataTables.ServerSide.AspNetCoreWeb</RootNamespace>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>1. Fixed Nullable Search Issue</PackageReleaseNotes>
+    <PackageReleaseNotes>1. Added Complex Searching/Sorting
+2. Added TagHelper Support for Complex Models</PackageReleaseNotes>
     <AssemblyName>JqueryDataTables.ServerSide.AspNetCoreWeb</AssemblyName>
+    <AssemblyVersion>2.2.0.0</AssemblyVersion>
+    <FileVersion>2.2.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
