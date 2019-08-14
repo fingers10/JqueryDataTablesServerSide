@@ -562,6 +562,8 @@ public async Task<IActionResult> OnGetExcelAsync(JqueryDataTablesParameters para
  
  # Contributions
  Feel free to submit a pull request if you can add additional functionality or find any bugs (to see a list of active issues), visit the   Issues section. Please make sure all commits are properly documented.
+ 
+ Many thanks to the below developers for helping with PR's and suggesting Features:
  * [@gaugo123](https://github.com/gaugo123) - gaugo123
  * [@cihangll](https://github.com/cihangll) - Cihan Güllü
   
