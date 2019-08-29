@@ -568,7 +568,7 @@ public async Task<IActionResult> OnGetExcelAsync(JqueryDataTablesParameters para
  * [@cihangll](https://github.com/cihangll) - Cihan Güllü
   
  # License
- JqueryDataTablesServerSide is release under the MIT license. You are free to use, modify and distribute this software, as long as the copyright header is left intact (specifically the comment block which starts with /*!.
+ JqueryDataTablesServerSide is release under the MIT license. You are free to use, modify and distribute this software, as long as the copyright header is left intact.
 
  Enjoy!
 
