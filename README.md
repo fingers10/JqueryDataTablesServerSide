@@ -1,4 +1,4 @@
-![Logo](https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Icons/logo.png)
+![Logo](https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Images/icon.png)
 
 [![NuGet Badge](https://buildstats.info/nuget/jquerydatatables.serverside.aspnetcoreweb)](https://www.nuget.org/packages/JqueryDatatables.ServerSide.AspNetCoreWeb/)
 [![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/fingers10/open-source-badges/)
@@ -55,10 +55,10 @@ If you liked `JqueryDataTablesServerSide` project or if it helped you, please gi
 # Compatibility Chart
 >The following chart describes the operator compatibility with data types with green as compatible and red as not compatible.
 
-![Compatibility Chart](https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Icons/compatibility-chart.PNG)
+![Compatibility Chart](https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Images/compatibility-chart.PNG)
 
 # NuGet:
-* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v2.2.0**
+* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v2.2.1**
 
 # Usage:
 To activate and make Jquery DataTable communicate with asp.net core backend,
