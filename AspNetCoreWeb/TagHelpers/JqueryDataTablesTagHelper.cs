@@ -4,6 +4,7 @@ using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -86,20 +87,20 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
 
         private static IEnumerable<TableColumn> GetColumnsFromModel(Type parentClass)
         {
-            var complexProperties = parentClass.GetTypeInfo()
-                       .DeclaredProperties
+            var complexProperties = parentClass.GetProperties()
                        .Where(p => p.GetCustomAttributes<NestedSortableAttribute>().Any() || p.GetCustomAttributes<NestedSearchableAttribute>().Any());
 
-            var properties = parentClass.GetTypeInfo()
-                       .DeclaredProperties;
+            var properties = parentClass.GetProperties();
 
             foreach (var prop in properties.Except(complexProperties))
             {
                 var propertyDescriptor = ExpressionHelper.GetPropertyDescriptor(prop);
+                var displayName = prop.IsDefined(typeof(DisplayAttribute), false) ? prop.GetCustomAttributes(typeof(DisplayAttribute),
+                false).Cast<DisplayAttribute>().Single().Name : null;
 
                 yield return new TableColumn
                 {
-                    Name = propertyDescriptor.DisplayName ?? propertyDescriptor.Name,
+                    Name = displayName ?? propertyDescriptor.DisplayName ?? propertyDescriptor.Name,
                     HasSearch = prop.GetCustomAttributes<SearchableAttribute>().Any()
                 };
             }
