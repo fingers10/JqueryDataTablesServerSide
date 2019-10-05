@@ -30,6 +30,9 @@ This repository is a Server Side processor for Jquery DataTables with Asp.Net Co
 # Wait - Why JqueryDataTablesServerSide ?
 Well... there are lots of different approaches how to get a Jquery DataTables with Asp.Net Core app running. I thought it would be nice for .NET devs to use the ASP.NET Core backend and just decorate the model properties with a pretty simple attributes called `[Searchable]` and `[Sortable]`. `[DisplayName(“”)]` as the name suggests, can be used to change the column name in excel export or display name in the table HTML. I just combine ASP.NET Core & Jquery DataTables for easy server side processing.
 
+# Give a Star ⭐️
+If you liked `JqueryDataTablesServerSide` project or if it helped you, please give a star ⭐️ for this repository. That will not only help strengthen our .NET community but also improve development skills for .NET developers in around the world. Thank you very much 👍
+
 ## Search
 * `[Searchable]`
 * `[SearchableString]`
@@ -39,10 +42,12 @@ Well... there are lots of different approaches how to get a Jquery DataTables wi
 * `[SearchableLong]`
 * `[SearchableDecimal]`
 * `[SearchableDouble]`
+* `[NestedSearchable]`
 
 ## Sort
 * `[Sortable]`
 * `[Sortable(Default = true)]`
+* `[NestedSortable]`
 
 ## Excel Export
 * `[DisplayName(“”)]`
@@ -53,7 +58,7 @@ Well... there are lots of different approaches how to get a Jquery DataTables wi
 ![Compatibility Chart](https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Icons/compatibility-chart.PNG)
 
 # NuGet:
-* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v2.1.0**
+* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v2.2.0**
 
 # Usage:
 To activate and make Jquery DataTable communicate with asp.net core backend,
@@ -99,7 +104,9 @@ Add a **JqueryDataTables TagHelper** reference to your `_ViewImports.cshtml` fil
                    thead-class="text-center"
                    enable-searching="true"
                    search-row-th-class="p-0"
-                   search-input-class="form-control form-control-sm">
+                   search-input-class="form-control form-control-sm"
+                   search-input-style="width: 100%"
+                   search-input-placeholder-prefix="Search">
 </jquery-datatables>
 ```
 
@@ -111,6 +118,8 @@ Add a **JqueryDataTables TagHelper** reference to your `_ViewImports.cshtml` fil
 * `enable-searching` - `true` to add search inputs to the `<thead>` and `false` to remove search inputs from the `<thead>`
 * `search-row-th-class` - to apply the given css class to the search inputs row of the `<thead>` in the html table
 * `search-input-class` - to apply the given css class to the search input controls added in each column inside `<thead>`
+* `search-input-style` - to apply the given css styles to the search input controls added in each column inside `<thead>`
+* `search-input-placeholder-prefix` - to apply your placeholder text as prefix in search input controls in each column inside `<thead>`
     
 # Initialize DataTable
 >Add the following code to initialize DataTable. Don't miss to add `orderCellsTop : true`. This makes sure to add sorting functionality to the first row in the table header. For other properties refer Jquery DataTables official documentation.
@@ -179,22 +188,29 @@ var table = $('#fingers10').DataTable({
                 name: "co"
             },
             {
-                data: "Office",
+                data: "Offices",
                 name: "eq"
             },
             {
-                data: "Extn",
+                data: "DemoNestedLevelOne.Experience",
                 name: "eq"
             },
             {
-                data: "StartDate",
+                data: "DemoNestedLevelOne.Extension",
+                name: "eq"
+            },
+            {
+                data: "DemoNestedLevelOne.DemoNestedLevelTwos.StartDates",
                 render: function (data, type, row) {
-                    return window.moment(data).format("DD/MM/YYYY");
+                    if (data)
+                        return window.moment(data).format("DD/MM/YYYY");
+                    else
+                        return null;
                 },
                 name: "gt"
             },
             {
-                data: "Salary",
+                data: "DemoNestedLevelOne.DemoNestedLevelTwos.Salary",
                 name: "lte"
             }
         ]
@@ -246,8 +262,20 @@ table.columns().every(function (index) {
     });
 ```
 
+>Add the following script to trigger search onpress of **Tab Key**
+
+```js
+$('#fingers10 thead tr:last th:eq(' + index + ') input')
+    .on('blur',
+	    function () {
+		    table.column($(this).parent().index() + ':visible').search(this.value).draw();
+       });
+```
+
 # Model to be passed to DataTable
->Decorate the properties based on their data types
+>Decorate the properties based on their data types. For Nested Complex Properties, decorate them with `[NestedSearchable]`/`[NestedSortable]` attributes upto any level.
+
+## Root Model:
 
 ```c#
 public class Demo
@@ -262,25 +290,52 @@ public class Demo
     [Sortable]
     public string Position { get; set; }
 
-    [SearchableString]
-    [Sortable]
-    public string Office { get; set; }
+    [SearchableString(EntityProperty = "Office")]
+    [Sortable(EntityProperty = "Office")]
+    public string Offices { get; set; }
 
-    [SearchableInt]
-    [Sortable]
-    [DisplayName("Extension")]
-    public int Extn { get; set; }
+    [NestedSearchable]
+    [NestedSortable]
+    public DemoNestedLevelOne DemoNestedLevelOne { get; set; }
+}
+```
 
-    [SearchableDateTime]
+## Nested Level One Model:
+
+```c#
+public class DemoNestedLevelOne
+{
+    [SearchableShort]
     [Sortable]
+    public short? Experience { get; set; }
+
+    [SearchableInt(EntityProperty = "Extn")]
+    [Sortable(EntityProperty = "Extn")]
+    public int? Extension { get; set; }
+
+    [NestedSearchable(ParentEntityProperty = "DemoNestedLevelTwo")]
+    [NestedSortable(ParentEntityProperty = "DemoNestedLevelTwo")]
+    public DemoNestedLevelTwo DemoNestedLevelTwos { get; set; }
+}
+```
+
+## Nested Level Two Model:
+
+```c#
+public class DemoNestedLevelTwo
+{
+    [SearchableDateTime(EntityProperty = "StartDate")]
+    [Sortable(EntityProperty = "StartDate")]
     [DisplayName("Start Date")]
-    public DateTime StartDate { get; set; }
+    public DateTime? StartDates { get; set; }
 
     [SearchableLong]
     [Sortable]
-    public long Salary { get; set; }
+    public long? Salary { get; set; }
 }
 ```
+
+**Please note:** If view model properties have different name than entity model then, you can still do mapping using `(EntityProperty = 'YourEntityPropertyName')`. If they are same then you can ignore this.
     
 # ActionMethod/PageHandler
 >On DataTable's AJAX Request, `JqueryDataTablesParameters` will read the DataTable's state and `JqueryDataTablesResult<T>` will accept `IEnumerable<T>` response data to be returned back to table as `JsonResult`.
@@ -404,7 +459,10 @@ public class DefaultDemoService:IDemoService
 
     public async Task<JqueryDataTablesPagedResults<Demo>> GetDataAsync(JqueryDataTablesParameters table)
     {
-        IQueryable<DemoEntity> query = _context.Demos;
+        IQueryable<DemoEntity> query = _context.Demos
+                                               .AsNoTracking()
+                                               .Include(x => x.DemoNestedLevelOne)
+                                               .ThenInclude(y => y.DemoNestedLevelTwo);
         query = new SearchOptionsProcessor<Demo,DemoEntity>().Apply(query,table.Columns);
         query = new SortOptionsProcessor<Demo,DemoEntity>().Apply(query,table);
 
@@ -443,11 +501,11 @@ public class DefaultDemoService:IDemoService
     var param = HttpContext.Session.GetString(nameof(JqueryDataTablesParameters));
 
     var results = await _demoService.GetDataAsync(JsonConvert.DeserializeObject<JqueryDataTablesParameters>(param));
-    return new JqueryDataTablesExcelResult<Demo>(results.Items,"Demo Sheet Name","Fingers10");
+    return new JqueryDataTablesExcelResult<DemoExcel>(_mapper.Map<List<DemoExcel>>(results.Items),"Demo Sheet Name","Fingers10");
  }
   ```   
   
-  ### Page Handler
+ ### Page Handler
   
   ```c#
  public async Task<IActionResult> OnGetExcelAsync()
@@ -457,7 +515,7 @@ public class DefaultDemoService:IDemoService
     var param = HttpContext.Session.GetString(nameof(JqueryDataTablesParameters));
 
     var results = await _demoService.GetDataAsync(JsonConvert.DeserializeObject<JqueryDataTablesParameters>(param));
-    return new JqueryDataTablesExcelResult<Demo>(results.Items,"Demo Sheet Name","Fingers10");
+    return new JqueryDataTablesExcelResult<DemoExcel>(_mapper.Map<List<DemoExcel>>(results.Items),"Demo Sheet Name","Fingers10");
  }
  ```   
  
@@ -469,7 +527,7 @@ public class DefaultDemoService:IDemoService
 public async Task<IActionResult> GetExcel(JqueryDataTablesParameters param)
 {
     var results = await _demoService.GetDataAsync(param);
-    return new JqueryDataTablesExcelResult<Demo>(results.Items,"Demo Sheet Name","Fingers10");
+    return new JqueryDataTablesExcelResult<DemoExcel>(_mapper.Map<List<DemoExcel>>(results.Items),"Demo Sheet Name","Fingers10");
 }
 ```
  
@@ -479,15 +537,16 @@ public async Task<IActionResult> GetExcel(JqueryDataTablesParameters param)
 public async Task<IActionResult> OnGetExcelAsync(JqueryDataTablesParameters param)
 {
     var results = await _demoService.GetDataAsync(param);
-    return new JqueryDataTablesExcelResult<Demo>(results.Items,"Demo Sheet Name","Fingers10");
+    return new JqueryDataTablesExcelResult<DemoExcel>(_mapper.Map<List<DemoExcel>>(results.Items),"Demo Sheet Name","Fingers10");
 }
 ```
  
- **Please note:** `GetExcel` **ActionMethod/Handler** name must match the name you define in the excel export action click in your Jquery DataTable Initialization script.
+ **Please note:** `GetExcel` **ActionMethod/Handler** name must match the name you define in the excel export action click in your Jquery DataTable Initialization script. For getting excel file from complex models/mappings, either project the results to final simple model or use automapper flattening feature to map the results from complex model to simple model.
  
  # Coming Soon
  JqueryDataTablesServerSide is actively under development and I plan to have even more useful features implemented soon, including:
- * Complex Search/Sort
+ * Dynamic Select
+ * More Helpers
  
  Get in touch if there are any features you feel JqueryDataTablesServerSide needs.
  
@@ -506,9 +565,13 @@ public async Task<IActionResult> OnGetExcelAsync(JqueryDataTablesParameters para
  
  # Contributions
  Feel free to submit a pull request if you can add additional functionality or find any bugs (to see a list of active issues), visit the   Issues section. Please make sure all commits are properly documented.
+ 
+ Many thanks to the below developers for helping with PR's and suggesting Features:
+ * [@gaugo123](https://github.com/gaugo123) - gaugo123
+ * [@cihangll](https://github.com/cihangll) - Cihan Güllü
   
  # License
- JqueryDataTablesServerSide is release under the MIT license. You are free to use, modify and distribute this software, as long as the copyright header is left intact (specifically the comment block which starts with /*!.
+ JqueryDataTablesServerSide is release under the MIT license. You are free to use, modify and distribute this software, as long as the copyright header is left intact.
 
  Enjoy!
 
