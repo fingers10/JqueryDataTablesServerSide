@@ -6,16 +6,13 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.DependencyInjection
 {
     public static class ServiceExtensions
     {
-        public static IServiceCollection AddJqueryDataTables(this IServiceCollection services)
+        public static IMvcBuilder AddJqueryDataTables(this IMvcBuilder options)
         {
+            options.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            options.Services.ConfigureOptions<ConfigureJqueryDataTablesOptions>();
+            //options.AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
-            services.TryAddSingleton<IHttpContextAccessor,HttpContextAccessor>();
-            services.ConfigureOptions<ConfigureJqueryDataTablesOptions>();
-
-            //.AddMvcCore(options => options.ModelBinderProviders.Insert(0,new JqueryDataTablesBinderProvider()))
-            //.AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
-
-            return services;
+            return options;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <Authors>Abdul Rahman</Authors>
     <Company>Fingers10</Company>
     <Product>JqueryDataTablesServerSide.AspNetCore</Product>
@@ -14,20 +14,19 @@
     <PackageTags>JqueryDataTables, Asp.Net Core, Server Side, Multiple Column, Dynamic, Searching, Sorting, Paging, Excel Export</PackageTags>
     <PackageId>JqueryDataTables.ServerSide.AspNetCoreWeb</PackageId>
     <PackageIcon>icon.png</PackageIcon>
-    <Version>2.2.1</Version>
+    <Version>3.0.0</Version>
     <RootNamespace>JqueryDataTables.ServerSide.AspNetCoreWeb</RootNamespace>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>1. Added Support for DisplayAttribute
-2. Applied Fixed to get properties from base class
-3. Replaced IconUrl with PackageIcon</PackageReleaseNotes>
+    <PackageReleaseNotes>Upgrade to Asp.Net Core 3.0</PackageReleaseNotes>
     <AssemblyName>JqueryDataTables.ServerSide.AspNetCoreWeb</AssemblyName>
-    <AssemblyVersion>2.2.1.0</AssemblyVersion>
-    <FileVersion>2.2.1.0</FileVersion>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <FileVersion>3.0.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.94.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <None Include="Images\icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
