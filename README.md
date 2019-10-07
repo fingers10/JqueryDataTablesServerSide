@@ -1,4 +1,4 @@
-![Logo](https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Icons/logo.png)
+![Logo](https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Images/icon.png)
 
 [![NuGet Badge](https://buildstats.info/nuget/jquerydatatables.serverside.aspnetcoreweb)](https://www.nuget.org/packages/JqueryDatatables.ServerSide.AspNetCoreWeb/)
 [![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/fingers10/open-source-badges/)
@@ -49,16 +49,18 @@ If you liked `JqueryDataTablesServerSide` project or if it helped you, please gi
 * `[Sortable(Default = true)]`
 * `[NestedSortable]`
 
-## Excel Export
+## Column Name
+Column names in HTML Table/Excel Export can be configured using the below attributes
+* `[Display(Name = "")]`
 * `[DisplayName(“”)]`
 
 # Compatibility Chart
 >The following chart describes the operator compatibility with data types with green as compatible and red as not compatible.
 
-![Compatibility Chart](https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Icons/compatibility-chart.PNG)
+![Compatibility Chart](https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Images/compatibility-chart.PNG)
 
 # NuGet:
-* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v2.2.0**
+* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v2.2.1**
 
 # Usage:
 To activate and make Jquery DataTable communicate with asp.net core backend,
@@ -111,15 +113,17 @@ Add a **JqueryDataTables TagHelper** reference to your `_ViewImports.cshtml` fil
 ```
 
 ## TagHelpers Attributes
-* `id` - to add id to the html table
-* `class` - to apply the given css class to the html table
-* `model` - view model with properties to generate columns for html table
-* `thead-class` - to apply the given css class to the `<thead>` in html table
-* `enable-searching` - `true` to add search inputs to the `<thead>` and `false` to remove search inputs from the `<thead>`
-* `search-row-th-class` - to apply the given css class to the search inputs row of the `<thead>` in the html table
-* `search-input-class` - to apply the given css class to the search input controls added in each column inside `<thead>`
-* `search-input-style` - to apply the given css styles to the search input controls added in each column inside `<thead>`
-* `search-input-placeholder-prefix` - to apply your placeholder text as prefix in search input controls in each column inside `<thead>`
+| Option                            | Description |
+|-----------------------------------|-------------|
+| `id`                              | to add id to the html table |
+| `class`                           | to apply the given css class to the html table |
+| `model`                           | view model with properties to generate columns for html table |
+| `thead-class`                     | to apply the given css class to the `<thead>` in html table |
+| `enable-searching`                | `true` to add search inputs to the `<thead>` and `false` to remove search inputs from the `<thead>` |
+| `search-row-th-class`             | to apply the given css class to the search inputs row of the `<thead>` in the html table |
+| `search-input-class`              | to apply the given css class to the search input controls added in each column inside `<thead>` |
+| `search-input-style`              | to apply the given css styles to the search input controls added in each column inside `<thead>` |
+| `search-input-placeholder-prefix` | to apply your placeholder text as prefix in search input controls in each column inside `<thead>` |
     
 # Initialize DataTable
 >Add the following code to initialize DataTable. Don't miss to add `orderCellsTop : true`. This makes sure to add sorting functionality to the first row in the table header. For other properties refer Jquery DataTables official documentation.
@@ -290,6 +294,7 @@ public class Demo
     [Sortable]
     public string Position { get; set; }
 
+    [Display(Name = "Office")]
     [SearchableString(EntityProperty = "Office")]
     [Sortable(EntityProperty = "Office")]
     public string Offices { get; set; }
@@ -309,6 +314,7 @@ public class DemoNestedLevelOne
     [Sortable]
     public short? Experience { get; set; }
 
+    [DisplayName("Extn")]
     [SearchableInt(EntityProperty = "Extn")]
     [Sortable(EntityProperty = "Extn")]
     public int? Extension { get; set; }
@@ -554,7 +560,7 @@ public async Task<IActionResult> OnGetExcelAsync(JqueryDataTablesParameters para
  * Asp.Net Core 2.2
  
  # Tools Used
- * Visual Studio Community 2017
+ * Visual Studio Community 2019
  
  # Other Nuget Packages Used
  * ClosedXML (0.94.2) - For Generating Excel Files
