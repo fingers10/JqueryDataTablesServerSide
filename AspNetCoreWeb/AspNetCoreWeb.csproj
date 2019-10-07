@@ -24,9 +24,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ClosedXML" Version="0.94.2" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <None Include="Images\icon.png" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.94.2" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -25,6 +26,15 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
         public static PropertyDescriptor GetPropertyDescriptor(PropertyInfo propertyInfo)
         {
             return TypeDescriptor.GetProperties(propertyInfo.DeclaringType).Find(propertyInfo.Name, false);
+        }
+
+        public static string GetPropertyDisplayName(PropertyInfo propertyInfo)
+        {
+            var propertyDescriptor = ExpressionHelper.GetPropertyDescriptor(propertyInfo);
+            var displayName = propertyInfo.IsDefined(typeof(DisplayAttribute), false) ? propertyInfo.GetCustomAttributes(typeof(DisplayAttribute),
+                false).Cast<DisplayAttribute>().Single().Name : null;
+
+            return displayName ?? propertyDescriptor.DisplayName ?? propertyDescriptor.Name;
         }
 
         public static PropertyInfo GetPropertyInfo<T>(string name)
