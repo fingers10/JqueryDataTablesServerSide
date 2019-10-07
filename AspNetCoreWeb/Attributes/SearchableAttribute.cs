@@ -5,7 +5,7 @@ using System;
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Attributes
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class SearchableAttribute:Attribute
+    public class SearchableAttribute : Attribute
     {
         public string EntityProperty { get; set; }
 

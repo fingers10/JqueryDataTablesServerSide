@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Providers
 {
-    public class StringSearchExpressionProvider:DefaultSearchExpressionProvider
+    public class StringSearchExpressionProvider : DefaultSearchExpressionProvider
     {
         private const string StartsWithOperator = "sw";
         private const string ContainsOperator = "co";
@@ -41,22 +41,18 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Providers
                                });
         }
 
-        public override Expression GetComparison(MemberExpression left,string op,Expression right)
+        public override Expression GetComparison(MemberExpression left, string op, Expression right)
         {
-            switch(op.ToLower())
+            return (op.ToLower()) switch
             {
-            case StartsWithOperator:
-            return Expression.Call(left,StartsWithMethod,right,IgnoreCase);
+                StartsWithOperator => Expression.Call(left, StartsWithMethod, right, IgnoreCase),
 
-            case ContainsOperator:
-            return Expression.Call(Expression.Call(left,ToLowerMethod),ContainsMethod,right);
+                ContainsOperator => Expression.Call(Expression.Call(left, ToLowerMethod), ContainsMethod, right),
 
-            case EqualsOperator:
-            return Expression.Call(Expression.Call(left,ToLowerMethod),StringEqualsMethod,right,IgnoreCase);
+                EqualsOperator => Expression.Call(Expression.Call(left, ToLowerMethod), StringEqualsMethod, right, IgnoreCase),
 
-            default:
-            return base.GetComparison(left,op,right);
-            }
+                _ => base.GetComparison(left, op, right),
+            };
         }
     }
 }

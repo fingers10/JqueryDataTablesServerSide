@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Providers
 {
-    public abstract class ComparableSearchExpressionProvider:DefaultSearchExpressionProvider
+    public abstract class ComparableSearchExpressionProvider : DefaultSearchExpressionProvider
     {
         private const string GreaterThanOperator = "gt";
         private const string GreaterThanEqualToOperator = "gte";
@@ -24,16 +24,16 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Providers
                         });
         }
 
-        public override Expression GetComparison(MemberExpression left,string op,Expression right)
+        public override Expression GetComparison(MemberExpression left, string op, Expression right)
         {
-            switch(op.ToLower())
+            return (op.ToLower()) switch
             {
-            case GreaterThanOperator: return Expression.GreaterThan(left,right);
-            case GreaterThanEqualToOperator: return Expression.GreaterThanOrEqual(left,right);
-            case LessThanOperator: return Expression.LessThan(left,right);
-            case LessThanEqualToOperator: return Expression.LessThanOrEqual(left,right);
-            default: return base.GetComparison(left,op,right);
-            }
+                GreaterThanOperator => Expression.GreaterThan(left, right),
+                GreaterThanEqualToOperator => Expression.GreaterThanOrEqual(left, right),
+                LessThanOperator => Expression.LessThan(left, right),
+                LessThanEqualToOperator => Expression.LessThanOrEqual(left, right),
+                _ => base.GetComparison(left, op, right),
+            };
         }
     }
 }

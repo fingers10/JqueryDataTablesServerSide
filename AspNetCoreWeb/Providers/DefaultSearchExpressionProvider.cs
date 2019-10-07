@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Providers
 {
-    public class DefaultSearchExpressionProvider:ISearchExpressionProvider
+    public class DefaultSearchExpressionProvider : ISearchExpressionProvider
     {
         protected const string EqualsOperator = "eq";
 
@@ -19,13 +19,13 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Providers
             return Expression.Constant(input);
         }
 
-        public virtual Expression GetComparison(MemberExpression left,string op,Expression right)
+        public virtual Expression GetComparison(MemberExpression left, string op, Expression right)
         {
-            switch(op.ToLower())
+            return (op.ToLower()) switch
             {
-            case EqualsOperator: return Expression.Equal(left,right);
-            default: throw new ArgumentException($"Invalid Operator '{op}'.");
-            }
+                EqualsOperator => Expression.Equal(left, right),
+                _ => throw new ArgumentException($"Invalid Operator '{op}'."),
+            };
         }
     }
 }

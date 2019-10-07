@@ -17,9 +17,9 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             .GetMethods()
             .ToArray();
 
-        private static MethodInfo GetLambdaFuncBuilder(Type source,Type dest)
+        private static MethodInfo GetLambdaFuncBuilder(Type source, Type dest)
         {
-            var predicate = typeof(Func<,>).MakeGenericType(source,dest);
+            var predicate = typeof(Func<,>).MakeGenericType(source, dest);
             return LambdaMethod.MakeGenericMethod(predicate);
         }
 
@@ -61,9 +61,9 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             return Expression.Parameter(typeof(T));
         }
 
-        public static MemberExpression GetPropertyExpression(ParameterExpression obj,PropertyInfo property)
+        public static MemberExpression GetPropertyExpression(ParameterExpression obj, PropertyInfo property)
         {
-            return Expression.Property(obj,property);
+            return Expression.Property(obj, property);
         }
 
         public static MemberExpression GetMemberExpression(Expression param, string propertyName)
@@ -78,25 +78,25 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             return Expression.Property(param, propertyName);
         }
 
-        public static LambdaExpression GetLambda<TSource, TDest>(ParameterExpression obj,Expression arg)
+        public static LambdaExpression GetLambda<TSource, TDest>(ParameterExpression obj, Expression arg)
         {
-            return GetLambda(typeof(TSource),typeof(TDest),obj,arg);
+            return GetLambda(typeof(TSource), typeof(TDest), obj, arg);
         }
 
-        public static LambdaExpression GetLambda(Type source,Type dest,ParameterExpression obj,Expression arg)
+        public static LambdaExpression GetLambda(Type source, Type dest, ParameterExpression obj, Expression arg)
         {
-            var lambdaBuilder = GetLambdaFuncBuilder(source,dest);
-            return (LambdaExpression)lambdaBuilder.Invoke(null,new object[] { arg,new[] { obj } });
+            var lambdaBuilder = GetLambdaFuncBuilder(source, dest);
+            return (LambdaExpression)lambdaBuilder.Invoke(null, new object[] { arg, new[] { obj } });
         }
 
-        public static IQueryable<T> CallWhere<T>(IQueryable<T> query,LambdaExpression predicate)
+        public static IQueryable<T> CallWhere<T>(IQueryable<T> query, LambdaExpression predicate)
         {
             var whereMethodBuilder = QueryableMethods
                 .First(x => x.Name == "Where" && x.GetParameters().Length == 2)
                 .MakeGenericMethod(typeof(T));
 
             return (IQueryable<T>)whereMethodBuilder
-                .Invoke(null,new object[] { query,predicate });
+                .Invoke(null, new object[] { query, predicate });
         }
 
         public static IQueryable<TEntity> CallOrderByOrThenBy<TEntity>(
@@ -107,21 +107,21 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             LambdaExpression keySelector)
         {
             var methodName = "OrderBy";
-            if(useThenBy)
+            if (useThenBy)
             {
                 methodName = "ThenBy";
             }
 
-            if(descending)
+            if (descending)
             {
                 methodName += "Descending";
             }
 
             var method = QueryableMethods
                 .First(x => x.Name == methodName && x.GetParameters().Length == 2)
-                .MakeGenericMethod(typeof(TEntity),propertyType);
+                .MakeGenericMethod(typeof(TEntity), propertyType);
 
-            return (IQueryable<TEntity>)method.Invoke(null,new object[] { modifiedQuery,keySelector });
+            return (IQueryable<TEntity>)method.Invoke(null, new object[] { modifiedQuery, keySelector });
 
         }
     }

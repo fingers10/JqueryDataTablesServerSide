@@ -3,11 +3,11 @@ using System.Linq.Expressions;
 
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Providers
 {
-    public class DecimalSearchExpressionProvider:ComparableSearchExpressionProvider
+    public class DecimalSearchExpressionProvider : ComparableSearchExpressionProvider
     {
         public override ConstantExpression GetValue(string input)
         {
-            if(!decimal.TryParse(input,out var value))
+            if (!decimal.TryParse(input, out var value))
             {
                 throw new ArgumentException("Invalid search value.");
             }
