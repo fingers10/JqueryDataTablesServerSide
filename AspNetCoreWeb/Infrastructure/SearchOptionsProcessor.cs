@@ -77,7 +77,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
         public static IQueryable<TEntity> Apply(IQueryable<TEntity> query, IEnumerable<DTColumn> columns)
         {
             var terms = GetValidTerms(columns).ToArray();
-            if (terms.Any())
+            if (!terms.Any())
             {
                 return query;
             }
