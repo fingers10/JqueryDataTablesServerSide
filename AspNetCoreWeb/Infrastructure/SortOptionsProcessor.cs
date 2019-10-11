@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 {
-    public class SortOptionsProcessor<TModel, TEntity>
+    public static class SortOptionsProcessor<TModel, TEntity>
     {
         private static IEnumerable<SortTerm> GetAllTerms(JqueryDataTablesParameters table)
         {
@@ -66,7 +66,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             }
         }
 
-        public IQueryable<TEntity> Apply(IQueryable<TEntity> query, JqueryDataTablesParameters table)
+        public static IQueryable<TEntity> Apply(IQueryable<TEntity> query, JqueryDataTablesParameters table)
         {
             var terms = GetValidTerms(table).ToArray();
             if (!terms.Any())
