@@ -51,7 +51,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 yield break;
             }
 
-            var declaredTerms = GetTermsFromModel(typeof(TModel));
+            var declaredTerms = GetTermsFromModel(typeof(TModel)).ToList();
 
             foreach (var term in queryTerms)
             {
@@ -77,7 +77,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
         public static IQueryable<TEntity> Apply(IQueryable<TEntity> query, IEnumerable<DTColumn> columns)
         {
             var terms = GetValidTerms(columns).ToArray();
-            if (terms.Length == 0)
+            if (terms.Any())
             {
                 return query;
             }
@@ -102,7 +102,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 var rightPreValue = term.ExpressionProvider.GetValue(term.Value);
 
                 var right = rightPreValue.Type != left.Type
-                    ? Expression.Convert(rightPreValue, left.Type)
+                    ? (Expression)Expression.Convert(rightPreValue, left.Type)
                     : (Expression)rightPreValue;
 
                 // x.Property == "Value"
