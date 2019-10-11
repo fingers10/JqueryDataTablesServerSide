@@ -8,20 +8,20 @@ using System.Reflection;
 
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 {
-    public class SearchOptionsProcessor<T, TEntity>
+    public static class SearchOptionsProcessor
     {
         private static IEnumerable<SearchTerm> GetAllTerms(IEnumerable<DTColumn> columns)
         {
             var dtColumns = columns as IList<DTColumn> ?? columns.ToList();
 
-            if(dtColumns.All(x => string.IsNullOrWhiteSpace(x.Search.Value)))
+            if (dtColumns.All(x => string.IsNullOrWhiteSpace(x.Search.Value)))
             {
                 yield break;
             }
 
-            foreach(var column in dtColumns)
+            foreach (var column in dtColumns)
             {
-                if(string.IsNullOrWhiteSpace(column.Search.Value))
+                if (string.IsNullOrWhiteSpace(column.Search.Value))
                 {
                     continue;
                 }
@@ -29,7 +29,8 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 var hasNavigation = column.Data.Contains('.');
                 var parentIndex = column.Data.Split('.').Length - 2;
 
-                yield return new SearchTerm {
+                yield return new SearchTerm
+                {
                     ValidSyntax = true,
                     Name = column.Data,
                     Operator = string.IsNullOrWhiteSpace(column.Name) ? "eq" : column.Name,
@@ -39,29 +40,29 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             }
         }
 
-        private static IEnumerable<SearchTerm> GetValidTerms(IEnumerable<DTColumn> columns)
+        private static IEnumerable<SearchTerm> GetValidTerms<TModel>(IEnumerable<DTColumn> columns)
         {
             var queryTerms = GetAllTerms(columns)
                 .Where(x => x.ValidSyntax)
                 .ToArray();
 
-            if(!queryTerms.Any())
+            if (!queryTerms.Any())
             {
                 yield break;
             }
 
-            var declaredTerms = GetTermsFromModel(typeof(T));
+            var declaredTerms = GetTermsFromModel(typeof(TModel));
 
-            foreach(var term in queryTerms)
+            foreach (var term in queryTerms)
             {
-                var declaredTerm =
-                    declaredTerms.SingleOrDefault(x => x.Name.Equals(term.Name,StringComparison.OrdinalIgnoreCase));
-                if(declaredTerm == null)
+                var declaredTerm = declaredTerms.SingleOrDefault(x => x.Name.Equals(term.Name, StringComparison.OrdinalIgnoreCase));
+                if (declaredTerm == null)
                 {
                     continue;
                 }
 
-                yield return new SearchTerm {
+                yield return new SearchTerm
+                {
                     ValidSyntax = term.ValidSyntax,
                     Name = declaredTerm.Name,
                     EntityName = declaredTerm.EntityName,
@@ -73,27 +74,25 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             }
         }
 
-        public IQueryable<TEntity> Apply(IQueryable<TEntity> query,IEnumerable<DTColumn> columns)
+        public static IQueryable<TEntity> Apply<TModel, TEntity>(IQueryable<TEntity> query, IEnumerable<DTColumn> columns)
         {
-            var terms = GetValidTerms(columns).ToArray();
-            if(!terms.Any())
+            var terms = GetValidTerms<TModel>(columns).ToArray();
+            if (terms.Length == 0)
             {
                 return query;
             }
 
             var modifiedQuery = query;
 
-            foreach(var term in terms)
+            foreach (var term in terms)
             {
-                var propertyInfo = ExpressionHelper
-                    .GetPropertyInfo(typeof(TEntity),term.EntityName ?? term.Name);
                 var obj = ExpressionHelper.Parameter<TEntity>();
 
                 // Build up the LINQ Expression backwards:
                 // query = query.Where(x => x.Property == "Value");
 
                 // x.Property
-                var left = ExpressionHelper.GetMemberExpression(obj,term.EntityName ?? term.Name);
+                var left = ExpressionHelper.GetMemberExpression(obj, term.EntityName ?? term.Name);
                 // read this!!!!
                 // http://askjonskeet.azurewebsites.net/answer/28476847/How-to-get-Expression-for-Nullable-values-(-fields-)-without-converting-from-ExpressionConvert-in-C
                 // 
@@ -103,17 +102,17 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 var rightPreValue = term.ExpressionProvider.GetValue(term.Value);
 
                 var right = rightPreValue.Type != left.Type
-                    ? (Expression)Expression.Convert(rightPreValue, left.Type)
+                    ? Expression.Convert(rightPreValue, left.Type)
                     : (Expression)rightPreValue;
 
                 // x.Property == "Value"
-                var comparisonExpression = term.ExpressionProvider.GetComparison(left,term.Operator,right);
+                var comparisonExpression = term.ExpressionProvider.GetComparison(left, term.Operator, right);
 
                 // x => x.Property == "Value"
-                var lambdaExpression = ExpressionHelper.GetLambda<TEntity,bool>(obj,comparisonExpression);
+                var lambdaExpression = ExpressionHelper.GetLambda<TEntity, bool>(obj, comparisonExpression);
 
                 // query = query.Where...
-                modifiedQuery = ExpressionHelper.CallWhere(modifiedQuery,lambdaExpression);
+                modifiedQuery = ExpressionHelper.CallWhere(modifiedQuery, lambdaExpression);
             }
 
             return modifiedQuery;
@@ -144,7 +143,8 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 
             var complexSearchProperties = parentSortClass.GetTypeInfo()
                        .DeclaredProperties
-                       .Where(p => p.GetCustomAttributes<NestedSearchableAttribute>().Any());
+                       .Where(p => p.GetCustomAttributes<NestedSearchableAttribute>().Any())
+                       .ToList();
 
             if (complexSearchProperties.Any())
             {
@@ -154,8 +154,8 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                     var parentAttribute = parentProperty.GetCustomAttribute<NestedSearchableAttribute>();
 
                     var complexProperties = GetTermsFromModel(
-                    parentType, 
-                    string.IsNullOrWhiteSpace(parentsEntityName) ? parentAttribute.ParentEntityProperty ?? parentProperty.Name : $"{parentsEntityName}.{parentAttribute.ParentEntityProperty ?? parentProperty.Name}", 
+                    parentType,
+                    string.IsNullOrWhiteSpace(parentsEntityName) ? parentAttribute.ParentEntityProperty ?? parentProperty.Name : $"{parentsEntityName}.{parentAttribute.ParentEntityProperty ?? parentProperty.Name}",
                     string.IsNullOrWhiteSpace(parentsName) ? parentProperty.Name : $"{parentsName}.{parentProperty.Name}",
                     true);
 

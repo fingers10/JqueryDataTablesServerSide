@@ -9,7 +9,6 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Attributes
     {
         public string EntityProperty { get; set; }
 
-        public ISearchExpressionProvider ExpressionProvider { get; set; }
-            = new DefaultSearchExpressionProvider();
+        public ISearchExpressionProvider ExpressionProvider { get; set; } = new DefaultSearchExpressionProvider();
     }
 }
