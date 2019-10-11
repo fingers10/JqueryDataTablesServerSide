@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 {
-    public static class SearchOptionsProcessor
+    public static class SearchOptionsProcessor<TModel, TEntity>
     {
         private static IEnumerable<SearchTerm> GetAllTerms(IEnumerable<DTColumn> columns)
         {
@@ -40,7 +40,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             }
         }
 
-        private static IEnumerable<SearchTerm> GetValidTerms<TModel>(IEnumerable<DTColumn> columns)
+        private static IEnumerable<SearchTerm> GetValidTerms(IEnumerable<DTColumn> columns)
         {
             var queryTerms = GetAllTerms(columns)
                 .Where(x => x.ValidSyntax)
@@ -74,9 +74,9 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             }
         }
 
-        public static IQueryable<TEntity> Apply<TModel, TEntity>(IQueryable<TEntity> query, IEnumerable<DTColumn> columns)
+        public static IQueryable<TEntity> Apply(IQueryable<TEntity> query, IEnumerable<DTColumn> columns)
         {
-            var terms = GetValidTerms<TModel>(columns).ToArray();
+            var terms = GetValidTerms(columns).ToArray();
             if (terms.Length == 0)
             {
                 return query;
