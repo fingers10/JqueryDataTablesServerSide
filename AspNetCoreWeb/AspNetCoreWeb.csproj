@@ -18,7 +18,8 @@
     <RootNamespace>JqueryDataTables.ServerSide.AspNetCoreWeb</RootNamespace>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>1. Upgrade to Asp.Net Core 3.0
-2. Code Formatting and Cleanup</PackageReleaseNotes>
+2. Code Formatting and Cleanup
+3. Dropped Newtonsoft.Json Dependency</PackageReleaseNotes>
     <AssemblyName>JqueryDataTables.ServerSide.AspNetCoreWeb</AssemblyName>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <FileVersion>3.0.0.0</FileVersion>
