@@ -1,21 +1,23 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using System.Text.Json.Serialization;
 
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.DependencyInjection
 {
     public static class ServiceExtensions
     {
-        public static IServiceCollection AddJqueryDataTables(this IServiceCollection services)
+        public static IMvcBuilder AddJqueryDataTables(this IMvcBuilder builder)
         {
+            builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.JsonSerializerOptions.PropertyNamingPolicy = null;
+            });
+            builder.Services.ConfigureOptions<ConfigureJqueryDataTablesOptions>();
 
-            services.TryAddSingleton<IHttpContextAccessor,HttpContextAccessor>();
-            services.ConfigureOptions<ConfigureJqueryDataTablesOptions>();
-
-            //.AddMvcCore(options => options.ModelBinderProviders.Insert(0,new JqueryDataTablesBinderProvider()))
-            //.AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
-
-            return services;
+            return builder;
         }
     }
 }

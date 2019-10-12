@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Binders
 {
-    public class JqueryDataTablesBinder:IModelBinder
+    public class JqueryDataTablesBinder : IModelBinder
     {
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
-            if(bindingContext == null)
+            if (bindingContext == null)
             {
                 throw new ArgumentNullException(nameof(bindingContext));
             }
@@ -24,7 +24,8 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Binders
             var length = Convert.ToInt32(allValues.FirstOrDefault(a => a.Key == "length").Value);
 
             // Search
-            var search = new DTSearch {
+            var search = new DTSearch
+            {
                 Value = allValues.FirstOrDefault(a => a.Key == "search[value]").Value,
                 Regex = Convert.ToBoolean(allValues.FirstOrDefault(a => a.Key == "search[regex]").Value)
             };
@@ -32,12 +33,13 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Binders
             // Order
             var o = 0;
             var order = new List<DTOrder>();
-            while(allValues.Any(a => a.Key == "order[" + o + "][column]"))
+            while (allValues.Any(a => a.Key == "order[" + o + "][column]"))
             {
                 Enum.TryParse(allValues.FirstOrDefault(a => a.Key == "order[" + o + "][dir]").Value.ToString().ToUpperInvariant(),
                     out DTOrderDir dir);
 
-                order.Add(new DTOrder {
+                order.Add(new DTOrder
+                {
                     Column = Convert.ToInt32(allValues.FirstOrDefault(a => a.Key == "order[" + o + "][column]").Value),
                     Dir = dir
                 });
@@ -47,14 +49,16 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Binders
             // Columns
             var c = 0;
             var columns = new List<DTColumn>();
-            while(allValues.Any(a => a.Key == "columns[" + c + "][name]"))
+            while (allValues.Any(a => a.Key == "columns[" + c + "][name]"))
             {
-                columns.Add(new DTColumn {
+                columns.Add(new DTColumn
+                {
                     Data = allValues.FirstOrDefault(a => a.Key == "columns[" + c + "][data]").Value,
                     Name = allValues.FirstOrDefault(a => a.Key == "columns[" + c + "][name]").Value,
                     Orderable = Convert.ToBoolean(allValues.FirstOrDefault(a => a.Key == "columns[" + c + "][orderable]").Value),
                     Searchable = Convert.ToBoolean(allValues.FirstOrDefault(a => a.Key == "columns[" + c + "][searchable]").Value),
-                    Search = new DTSearch {
+                    Search = new DTSearch
+                    {
                         Value = allValues.FirstOrDefault(a => a.Key == "columns[" + c + "][search][value]").Value,
                         Regex = Convert.ToBoolean(allValues.FirstOrDefault(a => a.Key == "columns[" + c + "][search][regex]").Value)
                     }
@@ -65,13 +69,14 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Binders
             // Additional Values
             var p = 0;
             var additionalValues = new List<string>();
-            while(allValues.Any(a => a.Key == "additionalValues[" + p + "]"))
+            while (allValues.Any(a => a.Key == "additionalValues[" + p + "]"))
             {
                 additionalValues.Add(allValues.FirstOrDefault(a => a.Key == "additionalValues[" + p + "]").Value);
                 p++;
             }
 
-            var model = new JqueryDataTablesParameters {
+            var model = new JqueryDataTablesParameters
+            {
                 Draw = draw,
                 Start = start,
                 Length = length,

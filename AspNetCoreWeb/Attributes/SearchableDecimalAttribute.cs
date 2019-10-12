@@ -4,7 +4,7 @@ using System;
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Attributes
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class SearchableDecimalAttribute:SearchableAttribute
+    public class SearchableDecimalAttribute : SearchableAttribute
     {
         public SearchableDecimalAttribute()
         {

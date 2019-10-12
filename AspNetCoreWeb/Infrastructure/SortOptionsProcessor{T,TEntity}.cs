@@ -13,15 +13,15 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
         {
             var dtColumns = table.Columns as IList<DTColumn> ?? table.Columns.ToList();
 
-            if(dtColumns.All(x => !x.Orderable))
+            if (dtColumns.All(x => !x.Orderable))
             {
                 yield break;
             }
 
-            foreach(var term in table.Order)
+            foreach (var term in table.Order)
             {
                 var column = dtColumns[term.Column];
-                if(!column.Orderable)
+                if (!column.Orderable)
                 {
                     continue;
                 }
@@ -29,7 +29,8 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 var hasNavigation = column.Data.Contains('.');
                 var parentIndex = column.Data.Split('.').Length - 2;
 
-                yield return new SortTerm {
+                yield return new SortTerm
+                {
                     Name = column.Data,
                     Descending = term.Dir.Equals(DTOrderDir.DESC),
                     HasNavigation = hasNavigation
@@ -40,23 +41,24 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
         private static IEnumerable<SortTerm> GetValidTerms(JqueryDataTablesParameters table)
         {
             var queryTerms = GetAllTerms(table).ToArray();
-            if(!queryTerms.Any())
+            if (!queryTerms.Any())
             {
                 yield break;
             }
 
             var declaredTerms = GetTermsFromModel(typeof(T));
 
-            foreach(var term in queryTerms)
+            foreach (var term in queryTerms)
             {
                 var declaredTerm =
-                    declaredTerms.SingleOrDefault(x => x.Name.Equals(term.Name,StringComparison.OrdinalIgnoreCase));
-                if(declaredTerm == null)
+                    declaredTerms.SingleOrDefault(x => x.Name.Equals(term.Name, StringComparison.OrdinalIgnoreCase));
+                if (declaredTerm == null)
                 {
                     continue;
                 }
 
-                yield return new SortTerm {
+                yield return new SortTerm
+                {
                     Name = declaredTerm.Name,
                     EntityName = declaredTerm.EntityName,
                     Descending = term.Descending,
@@ -66,10 +68,10 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             }
         }
 
-        public IQueryable<TEntity> Apply(IQueryable<TEntity> query,JqueryDataTablesParameters table)
+        public IQueryable<TEntity> Apply(IQueryable<TEntity> query, JqueryDataTablesParameters table)
         {
             var terms = GetValidTerms(table).ToArray();
-            if(!terms.Any())
+            if (!terms.Any())
             {
                 return query;
             }
@@ -77,10 +79,10 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             var modifiedQuery = query;
             var useThenBy = false;
 
-            foreach(var term in terms)
+            foreach (var term in terms)
             {
                 var propertyInfo = ExpressionHelper
-                    .GetPropertyInfo(typeof(TEntity),term.EntityName ?? term.Name);
+                    .GetPropertyInfo(typeof(TEntity), term.EntityName ?? term.Name);
                 var obj = ExpressionHelper.Parameter<TEntity>();
 
                 // Build up the LINQ Expression backwards:
@@ -90,11 +92,11 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 
                 // x => x.Property
                 var key = ExpressionHelper.GetMemberExpression(obj, term.EntityName ?? term.Name);
-                var keySelector = ExpressionHelper.GetLambda(typeof(TEntity),propertyInfo.PropertyType,obj,key);
+                var keySelector = ExpressionHelper.GetLambda(typeof(TEntity), propertyInfo.PropertyType, obj, key);
 
                 // query.OrderBy/ThenBy[Descending](x => x.Property)
                 modifiedQuery = ExpressionHelper.CallOrderByOrThenBy(
-                    modifiedQuery,useThenBy,term.Descending,propertyInfo.PropertyType,keySelector);
+                    modifiedQuery, useThenBy, term.Descending, propertyInfo.PropertyType, keySelector);
 
                 useThenBy = true;
             }
@@ -137,8 +139,8 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                     var parentAttribute = parentProperty.GetCustomAttribute<NestedSortableAttribute>();
 
                     var complexProperties = GetTermsFromModel(
-                    parentType, 
-                    string.IsNullOrWhiteSpace(parentsEntityName) ? parentAttribute.ParentEntityProperty ?? parentProperty.Name : $"{parentsEntityName}.{parentAttribute.ParentEntityProperty ?? parentProperty.Name}", 
+                    parentType,
+                    string.IsNullOrWhiteSpace(parentsEntityName) ? parentAttribute.ParentEntityProperty ?? parentProperty.Name : $"{parentsEntityName}.{parentAttribute.ParentEntityProperty ?? parentProperty.Name}",
                     string.IsNullOrWhiteSpace(parentsName) ? parentProperty.Name : $"{parentsName}.{parentProperty.Name}",
                     true);
 
