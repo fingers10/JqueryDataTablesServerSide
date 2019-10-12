@@ -60,7 +60,7 @@ Column names in HTML Table/Excel Export can be configured using the below attrib
 ![Compatibility Chart](https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Images/compatibility-chart.PNG)
 
 # NuGet:
-* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v2.2.1**
+* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v2.2.2**
 
 # Usage:
 To activate and make Jquery DataTable communicate with asp.net core backend,
