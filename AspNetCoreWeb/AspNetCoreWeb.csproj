@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Abdul Rahman</Authors>
     <Company>Fingers10</Company>
     <Product>JqueryDataTablesServerSide.AspNetCore</Product>
@@ -17,21 +17,20 @@
     <Version>3.0.0</Version>
     <RootNamespace>JqueryDataTables.ServerSide.AspNetCoreWeb</RootNamespace>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>1. Upgrade to Asp.Net Core 3.0
-2. Code Formatting and Cleanup
-3. Dropped Newtonsoft.Json Dependency</PackageReleaseNotes>
+    <PackageReleaseNotes>1. Removed AddJqueryDataTables Service Configuration
+2. Code Formatting and Cleanup</PackageReleaseNotes>
     <AssemblyName>JqueryDataTables.ServerSide.AspNetCoreWeb</AssemblyName>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <FileVersion>3.0.0.0</FileVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Fingers10.ExcelExport" Version="1.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.2.0" />
+    <PackageReference Include="System.Text.Json" Version="4.6.0" />
     <None Include="Images\icon.png" Pack="true" PackagePath="" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="ClosedXML" Version="0.94.2" />
   </ItemGroup>
 
 </Project>

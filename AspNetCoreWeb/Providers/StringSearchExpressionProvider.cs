@@ -43,16 +43,13 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Providers
 
         public override Expression GetComparison(MemberExpression left, string op, Expression right)
         {
-            return (op.ToLower()) switch
+            switch (op.ToLower())
             {
-                StartsWithOperator => Expression.Call(left, StartsWithMethod, right, IgnoreCase),
-
-                ContainsOperator => Expression.Call(Expression.Call(left, ToLowerMethod), ContainsMethod, right),
-
-                EqualsOperator => Expression.Call(Expression.Call(left, ToLowerMethod), StringEqualsMethod, right, IgnoreCase),
-
-                _ => base.GetComparison(left, op, right),
-            };
+                case StartsWithOperator: return Expression.Call(left, StartsWithMethod, right, IgnoreCase);
+                case ContainsOperator: return Expression.Call(Expression.Call(left, ToLowerMethod), ContainsMethod, right);
+                case EqualsOperator: return Expression.Call(Expression.Call(left, ToLowerMethod), StringEqualsMethod, right, IgnoreCase);
+                default: return base.GetComparison(left, op, right);
+            }
         }
     }
 }

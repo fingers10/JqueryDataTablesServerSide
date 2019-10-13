@@ -21,10 +21,10 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Providers
 
         public virtual Expression GetComparison(MemberExpression left, string op, Expression right)
         {
-            return (op.ToLower()) switch
+            switch (op.ToLower())
             {
-                EqualsOperator => Expression.Equal(left, right),
-                _ => throw new ArgumentException($"Invalid Operator '{op}'."),
+                case EqualsOperator: return Expression.Equal(left, right);
+                default: throw new ArgumentException($"Invalid Operator '{op}'.");
             };
         }
     }

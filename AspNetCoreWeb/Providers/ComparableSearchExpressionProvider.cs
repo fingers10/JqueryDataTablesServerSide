@@ -26,13 +26,13 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Providers
 
         public override Expression GetComparison(MemberExpression left, string op, Expression right)
         {
-            return (op.ToLower()) switch
+            switch (op.ToLower())
             {
-                GreaterThanOperator => Expression.GreaterThan(left, right),
-                GreaterThanEqualToOperator => Expression.GreaterThanOrEqual(left, right),
-                LessThanOperator => Expression.LessThan(left, right),
-                LessThanEqualToOperator => Expression.LessThanOrEqual(left, right),
-                _ => base.GetComparison(left, op, right),
+                case GreaterThanOperator: return Expression.GreaterThan(left, right);
+                case GreaterThanEqualToOperator: return Expression.GreaterThanOrEqual(left, right);
+                case LessThanOperator: return Expression.LessThan(left, right);
+                case LessThanEqualToOperator: return Expression.LessThanOrEqual(left, right);
+                default: return base.GetComparison(left, op, right);
             };
         }
     }
