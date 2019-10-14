@@ -18,7 +18,8 @@
     <RootNamespace>JqueryDataTables.ServerSide.AspNetCoreWeb</RootNamespace>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>1. Removed AddJqueryDataTables Service Configuration
-2. Code Formatting and Cleanup</PackageReleaseNotes>
+2. Made SearchOptionsProcessor and SortOptionsProcessor as Static
+3. Code Formatting and Cleanup</PackageReleaseNotes>
     <AssemblyName>JqueryDataTables.ServerSide.AspNetCoreWeb</AssemblyName>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <FileVersion>3.0.0.0</FileVersion>
