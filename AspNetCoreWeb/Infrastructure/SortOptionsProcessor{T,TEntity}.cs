@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 {
-    public class SortOptionsProcessor<T, TEntity>
+    public static class SortOptionsProcessor<T, TEntity>
     {
         private static IEnumerable<SortTerm> GetAllTerms(JqueryDataTablesParameters table)
         {
@@ -27,7 +27,6 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 }
 
                 var hasNavigation = column.Data.Contains('.');
-                var parentIndex = column.Data.Split('.').Length - 2;
 
                 yield return new SortTerm
                 {
@@ -46,12 +45,11 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 yield break;
             }
 
-            var declaredTerms = GetTermsFromModel(typeof(T));
+            var declaredTerms = GetTermsFromModel(typeof(T)).ToList();
 
             foreach (var term in queryTerms)
             {
-                var declaredTerm =
-                    declaredTerms.SingleOrDefault(x => x.Name.Equals(term.Name, StringComparison.OrdinalIgnoreCase));
+                var declaredTerm = declaredTerms.SingleOrDefault(x => x.Name.Equals(term.Name, StringComparison.OrdinalIgnoreCase));
                 if (declaredTerm == null)
                 {
                     continue;
@@ -68,7 +66,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             }
         }
 
-        public IQueryable<TEntity> Apply(IQueryable<TEntity> query, JqueryDataTablesParameters table)
+        public static IQueryable<TEntity> Apply(IQueryable<TEntity> query, JqueryDataTablesParameters table)
         {
             var terms = GetValidTerms(table).ToArray();
             if (!terms.Any())
@@ -81,8 +79,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 
             foreach (var term in terms)
             {
-                var propertyInfo = ExpressionHelper
-                    .GetPropertyInfo(typeof(TEntity), term.EntityName ?? term.Name);
+                var propertyInfo = ExpressionHelper.GetPropertyInfo(typeof(TEntity), term.EntityName ?? term.Name);
                 var obj = ExpressionHelper.Parameter<TEntity>();
 
                 // Build up the LINQ Expression backwards:
@@ -95,8 +92,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 var keySelector = ExpressionHelper.GetLambda(typeof(TEntity), propertyInfo.PropertyType, obj, key);
 
                 // query.OrderBy/ThenBy[Descending](x => x.Property)
-                modifiedQuery = ExpressionHelper.CallOrderByOrThenBy(
-                    modifiedQuery, useThenBy, term.Descending, propertyInfo.PropertyType, keySelector);
+                modifiedQuery = ExpressionHelper.CallOrderByOrThenBy(modifiedQuery, useThenBy, term.Descending, propertyInfo.PropertyType, keySelector);
 
                 useThenBy = true;
             }
@@ -131,23 +127,20 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 .DeclaredProperties
                 .Where(p => p.GetCustomAttributes<NestedSortableAttribute>().Any());
 
-            if (complexSortProperties.Any())
+            foreach (var parentProperty in complexSortProperties)
             {
-                foreach (var parentProperty in complexSortProperties)
+                var parentType = parentProperty.PropertyType;
+                var parentAttribute = parentProperty.GetCustomAttribute<NestedSortableAttribute>();
+
+                var complexProperties = GetTermsFromModel(
+                parentType,
+                string.IsNullOrWhiteSpace(parentsEntityName) ? parentAttribute.ParentEntityProperty ?? parentProperty.Name : $"{parentsEntityName}.{parentAttribute.ParentEntityProperty ?? parentProperty.Name}",
+                string.IsNullOrWhiteSpace(parentsName) ? parentProperty.Name : $"{parentsName}.{parentProperty.Name}",
+                true);
+
+                foreach (var complexProperty in complexProperties)
                 {
-                    var parentType = parentProperty.PropertyType;
-                    var parentAttribute = parentProperty.GetCustomAttribute<NestedSortableAttribute>();
-
-                    var complexProperties = GetTermsFromModel(
-                    parentType,
-                    string.IsNullOrWhiteSpace(parentsEntityName) ? parentAttribute.ParentEntityProperty ?? parentProperty.Name : $"{parentsEntityName}.{parentAttribute.ParentEntityProperty ?? parentProperty.Name}",
-                    string.IsNullOrWhiteSpace(parentsName) ? parentProperty.Name : $"{parentsName}.{parentProperty.Name}",
-                    true);
-
-                    foreach (var complexProperty in complexProperties)
-                    {
-                        yield return complexProperty;
-                    }
+                    yield return complexProperty;
                 }
             }
         }

@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 {
-    public class SearchOptionsProcessor<T, TEntity>
+    public static class SearchOptionsProcessor<T, TEntity>
     {
         private static IEnumerable<SearchTerm> GetAllTerms(IEnumerable<DTColumn> columns)
         {
@@ -27,7 +27,6 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 }
 
                 var hasNavigation = column.Data.Contains('.');
-                var parentIndex = column.Data.Split('.').Length - 2;
 
                 yield return new SearchTerm
                 {
@@ -51,12 +50,11 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 yield break;
             }
 
-            var declaredTerms = GetTermsFromModel(typeof(T));
+            var declaredTerms = GetTermsFromModel(typeof(T)).ToList();
 
             foreach (var term in queryTerms)
             {
-                var declaredTerm =
-                    declaredTerms.SingleOrDefault(x => x.Name.Equals(term.Name, StringComparison.OrdinalIgnoreCase));
+                var declaredTerm = declaredTerms.SingleOrDefault(x => x.Name.Equals(term.Name, StringComparison.OrdinalIgnoreCase));
                 if (declaredTerm == null)
                 {
                     continue;
@@ -75,7 +73,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             }
         }
 
-        public IQueryable<TEntity> Apply(IQueryable<TEntity> query, IEnumerable<DTColumn> columns)
+        public static IQueryable<TEntity> Apply(IQueryable<TEntity> query, IEnumerable<DTColumn> columns)
         {
             var terms = GetValidTerms(columns).ToArray();
             if (!terms.Any())
@@ -87,8 +85,6 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 
             foreach (var term in terms)
             {
-                var propertyInfo = ExpressionHelper
-                    .GetPropertyInfo(typeof(TEntity), term.EntityName ?? term.Name);
                 var obj = ExpressionHelper.Parameter<TEntity>();
 
                 // Build up the LINQ Expression backwards:
@@ -148,23 +144,20 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                        .DeclaredProperties
                        .Where(p => p.GetCustomAttributes<NestedSearchableAttribute>().Any());
 
-            if (complexSearchProperties.Any())
+            foreach (var parentProperty in complexSearchProperties)
             {
-                foreach (var parentProperty in complexSearchProperties)
+                var parentType = parentProperty.PropertyType;
+                var parentAttribute = parentProperty.GetCustomAttribute<NestedSearchableAttribute>();
+
+                var complexProperties = GetTermsFromModel(
+                parentType,
+                string.IsNullOrWhiteSpace(parentsEntityName) ? parentAttribute.ParentEntityProperty ?? parentProperty.Name : $"{parentsEntityName}.{parentAttribute.ParentEntityProperty ?? parentProperty.Name}",
+                string.IsNullOrWhiteSpace(parentsName) ? parentProperty.Name : $"{parentsName}.{parentProperty.Name}",
+                true);
+
+                foreach (var complexProperty in complexProperties)
                 {
-                    var parentType = parentProperty.PropertyType;
-                    var parentAttribute = parentProperty.GetCustomAttribute<NestedSearchableAttribute>();
-
-                    var complexProperties = GetTermsFromModel(
-                    parentType,
-                    string.IsNullOrWhiteSpace(parentsEntityName) ? parentAttribute.ParentEntityProperty ?? parentProperty.Name : $"{parentsEntityName}.{parentAttribute.ParentEntityProperty ?? parentProperty.Name}",
-                    string.IsNullOrWhiteSpace(parentsName) ? parentProperty.Name : $"{parentsName}.{parentProperty.Name}",
-                    true);
-
-                    foreach (var complexProperty in complexProperties)
-                    {
-                        yield return complexProperty;
-                    }
+                    yield return complexProperty;
                 }
             }
         }
