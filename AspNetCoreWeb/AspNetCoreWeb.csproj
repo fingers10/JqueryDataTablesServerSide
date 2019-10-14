@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Authors>Abdul Rahman</Authors>
-    <Company>Fingers10</Company>
-    <Product>JqueryDataTablesServerSide.AspNetCore</Product>
+    <Authors>Abdul Rahman (@fingers10)</Authors>
+    <Company>Abdul Rahman (@fingers10)</Company>
+    <Product>Fingers10.JqueryDataTablesServerSide.AspNetCore</Product>
     <Description>Simple and Powerful Dynamic Multiple Column Searching and Sorting along with Pagination and Excel Export for Jquery DataTables Asp.Net Core Server Side</Description>
-    <Copyright>Fingers10</Copyright>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>Copyright (c) 2019 Abdul Rahman (@fingers10)</Copyright>
+    <PackageLicenseExpression></PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/fingers10/JqueryDataTablesServerSide</PackageProjectUrl>
     <RepositoryUrl>https://github.com/fingers10/JqueryDataTablesServerSide</RepositoryUrl>
     <RepositoryType>Public</RepositoryType>
@@ -19,11 +19,13 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>1. Removed AddJqueryDataTables Service Configuration
 2. Made SearchOptionsProcessor and SortOptionsProcessor as Static
-3. Code Formatting and Cleanup</PackageReleaseNotes>
+3. Code Formatting and Cleanup
+4. Updated License file</PackageReleaseNotes>
     <AssemblyName>JqueryDataTables.ServerSide.AspNetCoreWeb</AssemblyName>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <FileVersion>3.0.0.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,6 +34,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="System.Text.Json" Version="4.6.0" />
     <None Include="Images\icon.png" Pack="true" PackagePath="" />
+    <None Include="..\LICENSE.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>
