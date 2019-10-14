@@ -493,7 +493,7 @@ public async Task<IActionResult> OnGetLoadTableAsync([ModelBinder(typeof(JqueryD
 }
 ```
 # Multiple Column Searching and Sorting
->Inject Automapper `IConfigurationProvider` to make use of `ProjectTo<T>` before returning the data. Inside the Data Access Method, create `IQueryable<TEntity>` to hold the query. Now, to perform dynamic multiple column **searching** create a instance of Search Processor `new SearchOptionsProcessor<T,TEntity>()` and call the `Apply()` function with query and table columns as parameters. Again for dynamic multiple column **sorting**, create a instance of Sort Processor `new SortOptionsProcessor<T,TEntity>()` and call the `Apply()` function with query and table as parameters. To implement **pagination**, make use of `Start` and `Length` from table parameter and return the result as `JqueryDataTablesPagedResults`.
+>Inject Automapper `IConfigurationProvider` to make use of `ProjectTo<T>` before returning the data. Inside the Data Access Method, create `IQueryable<TEntity>` to hold the query. Now, to perform dynamic multiple column **searching** use Static Search Processor `SearchOptionsProcessor<T,TEntity>` and call the `Apply()` function with query and table columns as parameters. Again for dynamic multiple column **sorting**, use Static Sort Processor `SortOptionsProcessor<T,TEntity>` and call the `Apply()` function with query and table as parameters. To implement **pagination**, make use of `Start` and `Length` from table parameter and return the result as `JqueryDataTablesPagedResults`.
 
 ```c#    
 public class DefaultDemoService:IDemoService
