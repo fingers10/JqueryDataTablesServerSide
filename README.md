@@ -60,7 +60,7 @@ Column names in HTML Table/Excel Export can be configured using the below attrib
 ![Compatibility Chart](https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Images/compatibility-chart.PNG)
 
 # NuGet:
-* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v2.2.2**
+* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v3.0.0**
 
 # Usage:
 To activate and make Jquery DataTable communicate with asp.net core backend,
@@ -77,12 +77,50 @@ PM> Install-Package JqueryDataTables.ServerSide.AspNetCoreWeb
 
 # Startup.cs
 
+## Asp.Net Core 3.0:
+
+**Json.NET** has been removed from the ASP.NET Core shared framework.
+
+The default for ASP.NET Core is now `System.Text.Json`, which is new in .NET Core 3.0. Consider using `System.Text.Json` when possible. It's high-performance and doesn't require an additional library dependency. I prefer to use Miscrosoft's new `System.Text.Json`.
+
+With **System.Text.Json**, setup your `ConfigureServices` as follows:
+
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddMvc();
+    services.AddControllersWithViews()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.JsonSerializerOptions.PropertyNamingPolicy = null;
+            });
     services.AddSession();
-    services.AddJqueryDataTables();
+    services.AddAutoMapper(typeof(Startup));
+}
+```
+
+If your using **Json.Net**, then add a package reference to ` Microsoft.AspNetCore.Mvc.NewtonsoftJson` and then setup your `ConfigureServices` as follows:
+
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddControllersWithViews()
+            .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+    services.AddSession();
+    services.AddAutoMapper(typeof(Startup));
+}
+```
+
+## Asp.Net Core 2.x:
+
+If you're using Asp.Net Core 2.x, then setup your `ConfigureServices` as follows,
+
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddMvc()
+            .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver())
+    services.AddSession();
     services.AddAutoMapper(typeof(Startup));
 }
 ```
@@ -358,7 +396,10 @@ public async Task<IActionResult> LoadTable([FromBody]JqueryDataTablesParameters 
     {
         // `param` is stored in session to be used for excel export. This is required only for AJAX POST.
         // Below session storage line can be removed if you're not using excel export functionality. 
-        HttpContext.Session.SetString(nameof(JqueryDataTablesParameters),JsonConvert.SerializeObject(param));
+	// If you're using Json.Net, then uncomment below line else remove below line
+	// HttpContext.Session.SetString(nameof(JqueryDataTablesParameters), JsonConvert.SerializeObject(param));
+	// If you're using new System.Text.Json then use below line
+        HttpContext.Session.SetString(nameof(JqueryDataTablesParameters), JsonSerializer.Serialize(param));
         var results = await _demoService.GetDataAsync(param);
 
         return new JsonResult(new JqueryDataTablesResult<Demo> {
@@ -384,7 +425,10 @@ public async Task<IActionResult> OnPostLoadTableAsync([FromBody]JqueryDataTables
     {
         // `param` is stored in session to be used for excel export. This is required only for AJAX POST.
         // Below session storage line can be removed if you're not using excel export functionality. 
-        HttpContext.Session.SetString(nameof(JqueryDataTablesParameters),JsonConvert.SerializeObject(param));
+	// If you're using Json.Net, then uncomment below line else remove below line
+	// HttpContext.Session.SetString(nameof(JqueryDataTablesParameters), JsonConvert.SerializeObject(param));
+	// If you're using new System.Text.Json then use below line
+        HttpContext.Session.SetString(nameof(JqueryDataTablesParameters), JsonSerializer.Serialize(param));
         var results = await _demoService.GetDataAsync(param);
 
         return new JsonResult(new JqueryDataTablesResult<Demo> {
@@ -406,7 +450,7 @@ public async Task<IActionResult> OnPostLoadTableAsync([FromBody]JqueryDataTables
 ### ActionMethod
 
 ```c#
-public async Task<IActionResult> LoadTable(JqueryDataTablesParameters param)
+public async Task<IActionResult> LoadTable([ModelBinder(typeof(JqueryDataTablesBinder))] JqueryDataTablesParameters param)
 {
     try
     {
@@ -429,7 +473,7 @@ public async Task<IActionResult> LoadTable(JqueryDataTablesParameters param)
 ### PageHandler
 
 ```c#
-public async Task<IActionResult> OnGetLoadTableAsync(JqueryDataTablesParameters param)
+public async Task<IActionResult> OnGetLoadTableAsync([ModelBinder(typeof(JqueryDataTablesBinder))] JqueryDataTablesParameters param)
 {
     try
     {
@@ -469,8 +513,8 @@ public class DefaultDemoService:IDemoService
                                                .AsNoTracking()
                                                .Include(x => x.DemoNestedLevelOne)
                                                .ThenInclude(y => y.DemoNestedLevelTwo);
-        query = new SearchOptionsProcessor<Demo,DemoEntity>().Apply(query,table.Columns);
-        query = new SortOptionsProcessor<Demo,DemoEntity>().Apply(query,table);
+        query = SearchOptionsProcessor<Demo,DemoEntity>.Apply(query,table.Columns);
+        query = SortOptionsProcessor<Demo,DemoEntity>.Apply(query,table);
 
         var size = await query.CountAsync();
 
@@ -506,7 +550,10 @@ public class DefaultDemoService:IDemoService
     // and deserialize it to get the required data.
     var param = HttpContext.Session.GetString(nameof(JqueryDataTablesParameters));
 
-    var results = await _demoService.GetDataAsync(JsonConvert.DeserializeObject<JqueryDataTablesParameters>(param));
+    // If you're using Json.Net, then uncomment below line else remove below line
+    // var results = await _demoService.GetDataAsync(JsonConvert.DeserializeObject<JqueryDataTablesParameters>(param));
+    // If you're using new System.Text.Json then use below line
+    var results = await _demoService.GetDataAsync(JsonSerializer.Deserialize<JqueryDataTablesParameters>(param));
     return new JqueryDataTablesExcelResult<DemoExcel>(_mapper.Map<List<DemoExcel>>(results.Items),"Demo Sheet Name","Fingers10");
  }
   ```   
@@ -520,7 +567,10 @@ public class DefaultDemoService:IDemoService
     // and deserialize it to get the required data.
     var param = HttpContext.Session.GetString(nameof(JqueryDataTablesParameters));
 
-    var results = await _demoService.GetDataAsync(JsonConvert.DeserializeObject<JqueryDataTablesParameters>(param));
+    // If you're using Json.Net, then uncomment below line else remove below line
+    // var results = await _demoService.GetDataAsync(JsonConvert.DeserializeObject<JqueryDataTablesParameters>(param));
+    // If you're using new System.Text.Json then use below line
+    var results = await _demoService.GetDataAsync(JsonSerializer.Deserialize<JqueryDataTablesParameters>(param));
     return new JqueryDataTablesExcelResult<DemoExcel>(_mapper.Map<List<DemoExcel>>(results.Items),"Demo Sheet Name","Fingers10");
  }
  ```   
@@ -530,7 +580,7 @@ public class DefaultDemoService:IDemoService
  ### Action Method
  
 ```c#
-public async Task<IActionResult> GetExcel(JqueryDataTablesParameters param)
+public async Task<IActionResult> GetExcel([ModelBinder(typeof(JqueryDataTablesBinder))] JqueryDataTablesParameters param)
 {
     var results = await _demoService.GetDataAsync(param);
     return new JqueryDataTablesExcelResult<DemoExcel>(_mapper.Map<List<DemoExcel>>(results.Items),"Demo Sheet Name","Fingers10");
@@ -540,7 +590,7 @@ public async Task<IActionResult> GetExcel(JqueryDataTablesParameters param)
  ### Page Handler
  
 ```c#
-public async Task<IActionResult> OnGetExcelAsync(JqueryDataTablesParameters param)
+public async Task<IActionResult> OnGetExcelAsync([ModelBinder(typeof(JqueryDataTablesBinder))] JqueryDataTablesParameters param)
 {
     var results = await _demoService.GetDataAsync(param);
     return new JqueryDataTablesExcelResult<DemoExcel>(_mapper.Map<List<DemoExcel>>(results.Items),"Demo Sheet Name","Fingers10");
@@ -556,15 +606,17 @@ public async Task<IActionResult> OnGetExcelAsync(JqueryDataTablesParameters para
  
  Get in touch if there are any features you feel JqueryDataTablesServerSide needs.
  
- # Platform Used
- * Asp.Net Core 2.2
+ # Target Platform
+ * .Net Standard 2.0
  
  # Tools Used
  * Visual Studio Community 2019
  
  # Other Nuget Packages Used
- * ClosedXML (0.94.2) - For Generating Excel Files
- * Microsoft.AspNetCore.Mvc (2.2.0) - For using MVC stuffs
+ * Fingers10.ExcelExport (1.0.0) - For Generating Excel Report
+ * Microsoft.AspNetCore.Razor (2.2.0) - For using TagHelper
+ * Newtonsoft.Json (12.0.2) - For Serialization/Deserialization
+ * System.Text.Json (4.6.0) - For Serialization/Deserialization
  
  # Author
  * **Abdul Rahman** - Software Developer - from India. Software Consultant, Architect, Freelance Lecturer/Developer and Web Geek.  
@@ -575,6 +627,7 @@ public async Task<IActionResult> OnGetExcelAsync(JqueryDataTablesParameters para
  Many thanks to the below developers for helping with PR's and suggesting Features:
  * [@gaugo123](https://github.com/gaugo123) - gaugo123
  * [@cihangll](https://github.com/cihangll) - Cihan Güllü
+ * [@JudeVajira](https://github.com/JudeVajira) - Jude Vajira Guanasekera
   
  # License
  JqueryDataTablesServerSide is release under the MIT license. You are free to use, modify and distribute this software, as long as the copyright header is left intact.
