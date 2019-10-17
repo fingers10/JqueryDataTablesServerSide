@@ -11,19 +11,19 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Providers
         private const string StartsWithOperator = "sw";
         private const string ContainsOperator = "co";
 
-        private static MethodInfo StartsWithMethod => typeof(string)
+        private static readonly MethodInfo StartsWithMethod = typeof(string)
             .GetMethods()
             .First(x => x.Name == "StartsWith" && x.GetParameters().Length == 2);
 
-        private static MethodInfo StringEqualsMethod => typeof(string)
+        private static readonly MethodInfo StringEqualsMethod = typeof(string)
             .GetMethods()
             .First(x => x.Name == "Equals" && x.GetParameters().Length == 2);
 
-        private static MethodInfo ContainsMethod => typeof(string)
+        private static readonly MethodInfo ContainsMethod = typeof(string)
             .GetMethods()
             .First(x => x.Name == "Contains" && x.GetParameters().Length == 1);
 
-        private static MethodInfo ToLowerMethod => typeof(string)
+        private static readonly MethodInfo ToLowerMethod = typeof(string)
             .GetMethods()
             .First(x => x.Name == "ToLower");
 

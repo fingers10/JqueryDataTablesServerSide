@@ -30,30 +30,25 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 
         public static string GetPropertyDisplayName(PropertyInfo propertyInfo)
         {
-            var propertyDescriptor = ExpressionHelper.GetPropertyDescriptor(propertyInfo);
+            var propertyDescriptor = GetPropertyDescriptor(propertyInfo);
             var displayName = propertyInfo.IsDefined(typeof(DisplayAttribute), false) ? propertyInfo.GetCustomAttributes(typeof(DisplayAttribute),
                 false).Cast<DisplayAttribute>().Single().Name : null;
 
             return displayName ?? propertyDescriptor.DisplayName ?? propertyDescriptor.Name;
         }
 
-        public static PropertyInfo GetPropertyInfo<T>(string name)
+        public static PropertyInfo GetPropertyInfo(Type type, string name)
         {
-            return typeof(T).GetProperties()
-                           .Single(p => p.Name == name);
-        }
-
-        public static PropertyInfo GetPropertyInfo(Type parentClass, string name)
-        {
-            if (name.Contains("."))
+            var index = name.IndexOf('.');
+            while (index != -1)
             {
-                int index = name.IndexOf(".");
-                var propertyInfo = parentClass.GetProperties().Single(p => p.Name == name.Substring(0, index));
-                return GetPropertyInfo(propertyInfo.PropertyType, name.Substring(index + 1));
+                var propertyInfo = type.GetProperties().Single(p => p.Name == name.Substring(0, index));
+                type = propertyInfo.PropertyType;
+                name = name.Substring(index + 1);
+                index = name.IndexOf('.');
             }
 
-            return parentClass.GetProperties()
-                .Single(p => p.Name == name);
+            return type.GetProperties().Single(p => p.Name == name);
         }
 
         public static ParameterExpression Parameter<T>()
@@ -61,18 +56,14 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             return Expression.Parameter(typeof(T));
         }
 
-        public static MemberExpression GetPropertyExpression(ParameterExpression obj, PropertyInfo property)
-        {
-            return Expression.Property(obj, property);
-        }
-
         public static MemberExpression GetMemberExpression(Expression param, string propertyName)
         {
-            if (propertyName.Contains("."))
+            var index = propertyName.IndexOf('.');
+            while (index != -1)
             {
-                int index = propertyName.IndexOf(".");
-                var subParam = Expression.Property(param, propertyName.Substring(0, index));
-                return GetMemberExpression(subParam, propertyName.Substring(index + 1));
+                param = Expression.Property(param, propertyName.Substring(0, index));
+                propertyName = propertyName.Substring(index + 1);
+                index = propertyName.IndexOf('.');
             }
 
             return Expression.Property(param, propertyName);
@@ -122,7 +113,6 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
                 .MakeGenericMethod(typeof(TEntity), propertyType);
 
             return (IQueryable<TEntity>)method.Invoke(null, new object[] { modifiedQuery, keySelector });
-
         }
     }
 }
