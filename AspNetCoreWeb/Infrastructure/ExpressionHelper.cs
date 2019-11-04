@@ -53,7 +53,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 
         public static ParameterExpression Parameter<T>()
         {
-            return Expression.Parameter(typeof(T));
+            return Expression.Parameter(typeof(T), $"{typeof(T).Name}Search");
         }
 
         public static MemberExpression GetMemberExpression(Expression param, string propertyName)
