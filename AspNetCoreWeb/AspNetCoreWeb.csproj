@@ -17,7 +17,7 @@
     <Version>3.1.0</Version>
     <RootNamespace>JqueryDataTables.ServerSide.AspNetCoreWeb</RootNamespace>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>1. Added SearchableEnumAttribute.
+    <PackageReleaseNotes>1. Added SearchableEnumAttribute and ExcludeFromJqueryDataTableAttribute.
 2. Added Few Optimizations.
 3. Added Implicit Searching and Sorting for Multiple Entity Terns</PackageReleaseNotes>
     <AssemblyName>JqueryDataTables.ServerSide.AspNetCoreWeb</AssemblyName>
