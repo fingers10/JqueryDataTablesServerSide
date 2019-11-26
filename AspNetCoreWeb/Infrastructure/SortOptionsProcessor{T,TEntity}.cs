@@ -79,23 +79,48 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 
             foreach (var term in terms)
             {
-                var propertyInfo = ExpressionHelper.GetPropertyInfo(typeof(TEntity), term.EntityName ?? term.Name);
-                var obj = ExpressionHelper.Parameter<TEntity>();
+                var hasMultipleTerms = term.EntityName?.Contains(',') ?? false;
 
-                // Build up the LINQ Expression backwards:
-                // query = query.OrderBy(x => x.Property);
-                // If it has navigation then:
-                // query = query.OrderBy(x => x.ParentProperty.Property)
+                if (hasMultipleTerms)
+                {
+                    var entityTerms = term.EntityName.Split(',');
 
-                // x => x.Property
-                var key = ExpressionHelper.GetMemberExpression(obj, term.EntityName ?? term.Name);
-                var keySelector = ExpressionHelper.GetLambda(typeof(TEntity), propertyInfo.PropertyType, obj, key);
+                    foreach (var entityTerm in entityTerms)
+                    {
+                        term.EntityName = entityTerm;
 
-                // query.OrderBy/ThenBy[Descending](x => x.Property)
-                modifiedQuery = ExpressionHelper.CallOrderByOrThenBy(modifiedQuery, useThenBy, term.Descending, propertyInfo.PropertyType, keySelector);
-
-                useThenBy = true;
+                        modifiedQuery = GetSortQuery(modifiedQuery, ref useThenBy, term);
+                    }
+                }
+                else
+                {
+                    modifiedQuery = GetSortQuery(modifiedQuery, ref useThenBy, term);
+                }
             }
+
+            return modifiedQuery;
+        }
+
+        private static IQueryable<TEntity> GetSortQuery(IQueryable<TEntity> modifiedQuery, ref bool useThenBy, SortTerm term)
+        {
+            var propertyInfo = ExpressionHelper.GetPropertyInfo(typeof(TEntity), term.EntityName ?? term.Name);
+            var parameterExpression = ExpressionHelper.Parameter<TEntity>();
+
+            // Build the LINQ expression backwards:
+            // query = query.OrderBy(x => x.Property);
+            // If it has navigation then:
+            // query = query.OrderBy(x => x.ParentProperty.Property)
+
+            // x => x.Property
+            var memberExpression = ExpressionHelper.GetMemberExpression(parameterExpression, term.EntityName ?? term.Name);
+            var lambdaExpression = ExpressionHelper.GetLambda(typeof(TEntity), propertyInfo.PropertyType,
+                                                          parameterExpression, memberExpression);
+
+            // query.OrderBy/ThenBy[Descending](x => x.Property)
+            modifiedQuery = ExpressionHelper.CallOrderByOrThenBy(modifiedQuery, useThenBy, term.Descending,
+                                                                 propertyInfo.PropertyType, lambdaExpression);
+
+            useThenBy = true;
 
             return modifiedQuery;
         }

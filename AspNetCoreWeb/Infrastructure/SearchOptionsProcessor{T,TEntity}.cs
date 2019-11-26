@@ -76,45 +76,66 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
         public static IQueryable<TEntity> Apply(IQueryable<TEntity> query, IEnumerable<DTColumn> columns)
         {
             var terms = GetValidTerms(columns).ToArray();
+
             if (!terms.Any())
             {
                 return query;
             }
 
             var modifiedQuery = query;
+            var parameterExpression = ExpressionHelper.Parameter<TEntity>();
+            Expression finalExpression = Expression.Constant(true);
+            Expression subExpression = Expression.Constant(false);
+
+            // Build up the LINQ Expression backwards:
+            // query = query.Where(x => x.Property == "Value" && (x.AnotherProperty == "Value" || x.SomeAnotherProperty == "Value"));
 
             foreach (var term in terms)
             {
-                var obj = ExpressionHelper.Parameter<TEntity>();
+                var hasMultipleTerms = term.EntityName?.Contains(',') ?? false;
 
-                // Build up the LINQ Expression backwards:
-                // query = query.Where(x => x.Property == "Value");
+                if (hasMultipleTerms)
+                {
+                    var entityTerms = term.EntityName.Split(',');
 
-                // x.Property
-                var left = ExpressionHelper.GetMemberExpression(obj, term.EntityName ?? term.Name);
-                // read this!!!!
-                // http://askjonskeet.azurewebsites.net/answer/28476847/How-to-get-Expression-for-Nullable-values-(-fields-)-without-converting-from-ExpressionConvert-in-C
-                // 
+                    foreach (var entityTerm in entityTerms)
+                    {
+                        term.EntityName = entityTerm;
 
-                // "Value"
-                //var right = term.ExpressionProvider.GetValue(term.Value);
-                var rightPreValue = term.ExpressionProvider.GetValue(term.Value);
+                        // x => x.Property == "Value" || x.AnotherProperty == "Value"
+                        subExpression = Expression.OrElse(subExpression, GetComparisonExpression(term, parameterExpression));
+                    }
+                }
 
-                var right = rightPreValue.Type != left.Type
-                    ? Expression.Convert(rightPreValue, left.Type)
-                    : (Expression)rightPreValue;
-
-                // x.Property == "Value"
-                var comparisonExpression = term.ExpressionProvider.GetComparison(left, term.Operator, right);
-
-                // x => x.Property == "Value"
-                var lambdaExpression = ExpressionHelper.GetLambda<TEntity, bool>(obj, comparisonExpression);
-
-                // query = query.Where...
-                modifiedQuery = ExpressionHelper.CallWhere(modifiedQuery, lambdaExpression);
+                // x => x.Property == "Value" && x.AnotherProperty == "Value"
+                finalExpression = Expression.AndAlso(finalExpression,
+                                                     hasMultipleTerms ? subExpression : GetComparisonExpression(term, parameterExpression));
             }
 
+            // x => x.Property == "Value" && (x.AnotherProperty == "Value" || x.SomeAnotherProperty == "Value")
+            var lambdaExpression = ExpressionHelper.GetLambda<TEntity, bool>(parameterExpression, finalExpression);
+
+            // query = query.Where...
+            modifiedQuery = ExpressionHelper.CallWhere(modifiedQuery, lambdaExpression);
+
             return modifiedQuery;
+        }
+
+        private static Expression GetComparisonExpression(SearchTerm term, ParameterExpression obj)
+        {
+            // x.Property
+            var left = ExpressionHelper.GetMemberExpression(obj, term.EntityName ?? term.Name);
+
+            // read this!!!!
+            // http://askjonskeet.azurewebsites.net/answer/28476847/How-to-get-Expression-for-Nullable-values-(-fields-)-without-converting-from-ExpressionConvert-in-C
+
+            // "Value"
+            //var right = term.ExpressionProvider.GetValue(term.Value);
+            var constant = term.ExpressionProvider.GetValue(term.Value);
+            var right = constant.Type != left.Type ? Expression.Convert(constant, left.Type) : (Expression)constant;
+
+            // x.Property == "Value"
+            return term.ExpressionProvider.GetComparison(left, term.Operator, right);
         }
 
         private static IEnumerable<SearchTerm> GetTermsFromModel(
