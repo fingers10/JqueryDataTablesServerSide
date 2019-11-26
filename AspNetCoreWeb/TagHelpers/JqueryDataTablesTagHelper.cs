@@ -90,7 +90,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
                        .Where(p => p.GetCustomAttributes<NestedSortableAttribute>().Any() || p.GetCustomAttributes<NestedSearchableAttribute>().Any());
 
             var properties = parentClass.GetProperties()
-                .Where(p => p.GetCustomAttributes<SortableAttribute>().Any() || p.GetCustomAttributes<SearchableAttribute>().Any());
+                .Where(p => !p.GetCustomAttributes<ExcludeFromJqueryDataTableAttribute>().Any());
 
             foreach (var prop in properties.Except(complexProperties))
             {
