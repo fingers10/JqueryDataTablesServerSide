@@ -63,7 +63,14 @@ To exclude any property of your model from being displayed in `<jquery-datatable
 # Compatibility Chart
 >The following chart describes the operator compatibility with data types with green as compatible and red as not compatible.
 
-![Compatibility Chart](https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Images/compatibility-chart.PNG)
+|Operator|Description|`string`|`DateTime`|`short`|`int`|`long`|`decimal`|`double`|`enum`|
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+|`co`|Contains|:heavy_check_mark:|:x:|:x:|:x:|:x:|:x:|:x:|:x:|
+|`eq`|Equals|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|
+|`gt`|GreaterThan|:x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|
+|`gte`|GreaterThanEqual|:x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|
+|`lt`|LesserThan|:x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|
+|`lte`|LesserThanEqual|:x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|
 
 # NuGet:
 * [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v3.1.0**
