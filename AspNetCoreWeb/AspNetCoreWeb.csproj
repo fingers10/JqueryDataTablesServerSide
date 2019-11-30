@@ -14,15 +14,14 @@
     <PackageTags>JqueryDataTables, Asp.Net Core, Server Side, Multiple Column, Dynamic, Searching, Sorting, Paging, Excel Export</PackageTags>
     <PackageId>JqueryDataTables.ServerSide.AspNetCoreWeb</PackageId>
     <PackageIcon>icon.png</PackageIcon>
-    <Version>3.1.0</Version>
+    <Version>3.2.0</Version>
     <RootNamespace>JqueryDataTables.ServerSide.AspNetCoreWeb</RootNamespace>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>1. Added SearchableEnumAttribute and ExcludeFromJqueryDataTableAttribute.
-2. Added Few Optimizations.
-3. Added Implicit Searching and Sorting for Multiple Entity Terns</PackageReleaseNotes>
+    <PackageReleaseNotes>1. Removed ExcludeFromJqueryDataTableAttribute.
+2. Added JqueryDataTableColumnAttribute</PackageReleaseNotes>
     <AssemblyName>JqueryDataTables.ServerSide.AspNetCoreWeb</AssemblyName>
-    <AssemblyVersion>3.1.0.0</AssemblyVersion>
-    <FileVersion>3.1.0.0</FileVersion>
+    <AssemblyVersion>3.2.0.0</AssemblyVersion>
+    <FileVersion>3.2.0.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
   </PropertyGroup>

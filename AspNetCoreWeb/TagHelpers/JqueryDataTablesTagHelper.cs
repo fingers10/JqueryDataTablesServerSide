@@ -53,7 +53,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
                 searchRow.AppendLine("<tr>");
             }
 
-            var columns = GetColumnsFromModel(Model.GetType());
+            var columns = GetColumnsFromModel(Model.GetType()).Where(c => !c.Exclude).OrderBy(c => c.Order);
 
             foreach (var column in columns)
             {
@@ -89,15 +89,18 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
             var complexProperties = parentClass.GetProperties()
                        .Where(p => p.GetCustomAttributes<NestedSortableAttribute>().Any() || p.GetCustomAttributes<NestedSearchableAttribute>().Any());
 
-            var properties = parentClass.GetProperties()
-                .Where(p => !p.GetCustomAttributes<ExcludeFromJqueryDataTableAttribute>().Any());
+            var properties = parentClass.GetProperties();
 
             foreach (var prop in properties.Except(complexProperties))
             {
+                var jqueryDataTableColumn = prop.GetCustomAttribute<JqueryDataTableColumnAttribute>();
+
                 yield return new TableColumn
                 {
                     Name = ExpressionHelper.GetPropertyDisplayName(prop),
-                    HasSearch = prop.GetCustomAttributes<SearchableAttribute>().Any()
+                    HasSearch = prop.GetCustomAttributes<SearchableAttribute>().Any(),
+                    Order = jqueryDataTableColumn.Order,
+                    Exclude = jqueryDataTableColumn.Exclude
                 };
             }
 
