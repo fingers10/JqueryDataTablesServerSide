@@ -42,6 +42,7 @@ If you liked `JqueryDataTablesServerSide` project or if it helped you, please gi
 * `[SearchableLong]`
 * `[SearchableDecimal]`
 * `[SearchableDouble]`
+* `[SearchableEnum(typeof(TEnum))]`
 * `[NestedSearchable]`
 
 ## Sort
@@ -49,10 +50,15 @@ If you liked `JqueryDataTablesServerSide` project or if it helped you, please gi
 * `[Sortable(Default = true)]`
 * `[NestedSortable]`
 
-## Column Name
+## Columns 
+### Name
 Column names in HTML Table/Excel Export can be configured using the below attributes
 * `[Display(Name = "")]`
 * `[DisplayName(“”)]`
+
+### Exclude
+To exclude any property of your model from being displayed in `<jquery-datatables>` Tag Helper
+* `[ExcludeFromJqueryDataTable]`
 
 # Compatibility Chart
 >The following chart describes the operator compatibility with data types with green as compatible and red as not compatible.
@@ -60,7 +66,7 @@ Column names in HTML Table/Excel Export can be configured using the below attrib
 ![Compatibility Chart](https://github.com/fingers10/JqueryDataTablesServerSide/blob/master/AspNetCoreWeb/Images/compatibility-chart.PNG)
 
 # NuGet:
-* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v3.0.0**
+* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v3.1.0**
 
 # Usage:
 To activate and make Jquery DataTable communicate with asp.net core backend,
@@ -77,7 +83,7 @@ PM> Install-Package JqueryDataTables.ServerSide.AspNetCoreWeb
 
 # Startup.cs
 
-## Asp.Net Core 3.0:
+## Asp.Net Core 3.x:
 
 **Json.NET** has been removed from the ASP.NET Core shared framework.
 
@@ -324,11 +330,17 @@ public class Demo
 {
     public int Id { get; set; }
 
-    [SearchableString]
-    [Sortable(Default = true)]
-    public string Name { get; set; }
+    [SearchableString(EntityProperty = "FirstName,LastName")]
+    [Sortable(EntityProperty = "FirstName,LastName", Default = true)]
+    public string Name { get => $"{FirstName} {LastName}"; }
+    
+    [ExcludeFromJqueryDataTable]
+    public string FirstName { get; set; }
 
-    [SearchableString]
+    [ExcludeFromJqueryDataTable]
+    public string LastName { get; set; }
+
+    [SearchableEnum(typeof(Position))]
     [Sortable]
     public string Position { get; set; }
 
@@ -379,7 +391,9 @@ public class DemoNestedLevelTwo
 }
 ```
 
-**Please note:** If view model properties have different name than entity model then, you can still do mapping using `(EntityProperty = 'YourEntityPropertyName')`. If they are same then you can ignore this.
+**Please note:** 
+* If view model properties have different name than entity model, then you can still do mapping using `(EntityProperty = 'YourEntityPropertyName')`. If they are same then you can ignore this.
+* If view model property is a combination of some other properties like `Name` property in the above root model, then you can specify them in `(EntityProperty = 'YourEntityPropertyName,YourSomeOtherEntityPropertyName')`. This will make an implicit `OR` search in database and sort by `YourEntityPropertyName` and then by `YourSomeOtherEntityPropertyName` in database. For Example, take the `Name` property in root model. It has `[SearchableString(EntityProperty = "FirstName,LastName")]`. This will generate a implicit `OR` query like `entity.Where(x => x.FirstName.ToLower().Contains("Name") || x.LastName.ToLower().Contains("Name"))`. Similarly, `[Sortable(EntityProperty = "FirstName,LastName", Default = true)]` will generate query like `entity.OrderBy(x => x.FirstName).ThenBy(x => x.LastName)` for ascending order and `entity.OrderByDescending(x => x.FirstName).ThenByDescending(x => x.LastName)` for descending order.
     
 # ActionMethod/PageHandler
 >On DataTable's AJAX Request, `JqueryDataTablesParameters` will read the DataTable's state and `JqueryDataTablesResult<T>` will accept `IEnumerable<T>` response data to be returned back to table as `JsonResult`.
