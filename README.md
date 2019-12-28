@@ -74,7 +74,7 @@ And here are the options,
 
 |Option |Type    |Example                                  |Description|
 |-------|--------|-----------------------------------------|-----------|
-|Exclude|`string`|`[JqueryDataTableColumn(Exclude = true)]`|To exclude the property of your model from being added in HTML|
+|Exclude|`bool`|`[JqueryDataTableColumn(Exclude = true)]`|To exclude the property of your model from being added in HTML|
 |Order  |`int`   |`[JqueryDataTableColumn(Order = N)]`     |To control the order of columns in HTML|
 
 **Please note:** From **v.3.2.0** all the simple properties in your models **must have `[JqueryDataTableColumn]` attribute** for the `<jquery-datatables>` Tag Helper to work.
