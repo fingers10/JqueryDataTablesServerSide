@@ -215,7 +215,7 @@ var table = $('#fingers10').DataTable({
         orderCellsTop: true,
         autoWidth: true,
         deferRender: true,
-        lengthMenu: [5, 10, 15, 20],
+        lengthMenu: [[5, 10, 15, 20, -1], [5, 10, 15, 20, "All"]],
         dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6 text-right"l>><"row"<"col-sm-12"tr>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
         buttons: [
             {
@@ -557,6 +557,7 @@ public class DefaultDemoService:IDemoService
 
     public async Task<JqueryDataTablesPagedResults<Demo>> GetDataAsync(JqueryDataTablesParameters table)
     {
+        Demo[] items = null;
         IQueryable<DemoEntity> query = _context.Demos
                                                .AsNoTracking()
                                                .Include(x => x.DemoNestedLevelOne)
@@ -566,12 +567,20 @@ public class DefaultDemoService:IDemoService
 
         var size = await query.CountAsync();
 
-        var items = await query
-            .AsNoTracking()
+        if (table.Length > 0)
+        {
+            items = await query
             .Skip((table.Start / table.Length) * table.Length)
             .Take(table.Length)
             .ProjectTo<Demo>(_mappingConfiguration)
             .ToArrayAsync();
+        }
+        else
+        {
+            items = await query
+            .ProjectTo<Demo>(_mappingConfiguration)
+            .ToArrayAsync();
+        }
 
         return new JqueryDataTablesPagedResults<Demo> {
             Items = items,
