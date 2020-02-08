@@ -14,14 +14,14 @@
     <PackageTags>JqueryDataTables, Asp.Net Core, Server Side, Multiple Column, Dynamic, Searching, Sorting, Paging, Excel Export</PackageTags>
     <PackageId>JqueryDataTables.ServerSide.AspNetCoreWeb</PackageId>
     <PackageIcon>icon.png</PackageIcon>
-    <Version>3.2.0</Version>
+    <Version>4.0.0</Version>
     <RootNamespace>JqueryDataTables.ServerSide.AspNetCoreWeb</RootNamespace>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>1. Removed ExcludeFromJqueryDataTableAttribute.
-2. Added JqueryDataTableColumnAttribute</PackageReleaseNotes>
+    <PackageReleaseNotes>1. Removed Excel Export Functionality. Excel Export Can be added if required from Fingers10.ExcelExport directly in your web project.
+2. Added multiple input types</PackageReleaseNotes>
     <AssemblyName>JqueryDataTables.ServerSide.AspNetCoreWeb</AssemblyName>
-    <AssemblyVersion>3.2.0.0</AssemblyVersion>
-    <FileVersion>3.2.0.0</FileVersion>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <FileVersion>4.2.0.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
   </PropertyGroup>
