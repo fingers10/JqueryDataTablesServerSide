@@ -99,8 +99,8 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
                 {
                     Name = ExpressionHelper.GetPropertyDisplayName(prop),
                     HasSearch = prop.GetCustomAttributes<SearchableAttribute>().Any(),
-                    Order = jqueryDataTableColumn.Order,
-                    Exclude = jqueryDataTableColumn.Exclude
+                    Order = jqueryDataTableColumn != null ? jqueryDataTableColumn.Order : 0,
+                    Exclude = jqueryDataTableColumn != null ? jqueryDataTableColumn.Exclude : true
                 };
             }
 
