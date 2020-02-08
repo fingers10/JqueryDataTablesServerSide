@@ -27,9 +27,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fingers10.ExcelExport" Version="1.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
     <PackageReference Include="System.Text.Json" Version="4.6.0" />
     <None Include="Images\icon.png" Pack="true" PackagePath="" />
     <None Include="..\LICENSE.md" Pack="true" PackagePath="" />
