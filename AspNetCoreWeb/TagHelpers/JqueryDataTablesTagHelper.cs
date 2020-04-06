@@ -80,7 +80,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
                 searchRow.AppendLine("</tr>");
             }
 
-            output.Content.SetHtmlContent($"{headerRow.ToString()}{searchRow.ToString()}");
+            output.Content.SetHtmlContent($"{headerRow}{searchRow}");
             output.PostContent.SetHtmlContent("</thead>");
         }
 

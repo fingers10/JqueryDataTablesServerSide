@@ -1,24 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Providers
 {
     public class EnumerationSearchExpressionProvider : DefaultSearchExpressionProvider
     {
-        private static readonly MethodInfo ToStringMethod = typeof(Enum)
-            .GetMethods()
-            .First(x => x.Name == "ToString" && x.GetParameters().Length == 0);
-
-        private static readonly MethodInfo StringEqualsMethod = typeof(string)
-            .GetMethods()
-            .First(x => x.Name == "Equals" && x.GetParameters().Length == 2);
-
-        private static ConstantExpression IgnoreCase
-            => Expression.Constant(StringComparison.OrdinalIgnoreCase);
-
         public override IEnumerable<string> GetOperators()
         {
             return base.GetOperators();
@@ -28,7 +14,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Providers
         {
             switch (op.ToLower())
             {
-                case EqualsOperator: return Expression.Call(Expression.Call(left, ToStringMethod), StringEqualsMethod, Expression.Call(right, ToStringMethod), IgnoreCase);
+                case EqualsOperator: return Expression.Equal(left, right);
                 default: return base.GetComparison(left, op, right);
             }
         }
