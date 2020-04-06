@@ -50,30 +50,49 @@ If you liked `JqueryDataTablesServerSide` project or if it helped you, please gi
 * `[Sortable(Default = true)]`
 * `[NestedSortable]`
 
+All the above attributes have the following options,
+
+|Mode         |Option              |Type    |Example                                                      |Description|
+|-------------|--------------------|--------|-------------------------------------------------------------|-----------|
+|Search       |EntityProperty      |`string`|`[Searchable*(EntityProperty = "EntityPropertyName")]`|To map your view model property with entity property if they have a different name|
+|Nested Search|ParentEntityProperty|`string`|`[NestedSearchable(ParentEntityProperty = "ParentEntityPropertyName")]`|To map your view model property with entity property if they have a different name|
+|Sort         |EntityProperty      |`string`|`[Sortable(EntityProperty = "EntityPropertyName")]`|To map your view model property with entity property if they have a different name|
+|Sort         |Default             |`bool`  |`[Sortable(Default = true)]`|To indicate your database to do default sort by this property if no sort is specified from client|
+|Nested Sort  |ParentEntityProperty|`string`|`[NestedSortable(EntityProperty = "EntityPropertyName")]`|To map your view model property with entity property if they have a different name|
+
 ## Columns 
 ### Name
 Column names in HTML Table/Excel Export can be configured using the below attributes
 * `[Display(Name = "")]`
 * `[DisplayName(“”)]`
 
-### Exclude
-To exclude any property of your model from being displayed in `<jquery-datatables>` Tag Helper
-* `[ExcludeFromJqueryDataTable]`
+### HTML Setup
+To customize the HTML Column display in `<jquery-datatables>` Tag Helper, use the following attribute
+* `[JqueryDataTableColumn]`
+
+And here are the options,
+
+|Option |Type    |Example                                  |Description|
+|-------|--------|-----------------------------------------|-----------|
+|Exclude|`bool`|`[JqueryDataTableColumn(Exclude = true)]`|To exclude the property of your model from being added in HTML|
+|Order  |`int`   |`[JqueryDataTableColumn(Order = N)]`     |To control the order of columns in HTML|
+
+**Please note:** From **v.3.2.0** all the simple properties in your models **must have `[JqueryDataTableColumn]` attribute** for the `<jquery-datatables>` Tag Helper to work.
 
 # Compatibility Chart
 >The following chart describes the operator compatibility with data types with green as compatible and red as not compatible.
 
 |Operator|Description|`string`|`DateTime`|`short`|`int`|`long`|`decimal`|`double`|`enum`|
-|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
-|`co`|Contains|:heavy_check_mark:|:x:|:x:|:x:|:x:|:x:|:x:|:x:|
-|`eq`|Equals|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|
-|`gt`|GreaterThan|:x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|
-|`gte`|GreaterThanEqual|:x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|
-|`lt`|LesserThan|:x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|
-|`lte`|LesserThanEqual|:x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|
+|--------|-----------|--------|----------|-------|-----|------|---------|--------|------|
+|`co`    |Contains   |:heavy_check_mark:|:x:|:x:|:x:|:x:|:x:|:x:|:x:|
+|`eq`    |Equals     | :heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|
+|`gt`    |GreaterThan| :x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|
+|`gte`   |GreaterThanEqual| :x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|
+|`lt`    |LesserThan| :x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|
+|`lte`   |LesserThanEqual| :x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|
 
 # NuGet:
-* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v3.1.0**
+* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v3.2.0**
 
 # Usage:
 To activate and make Jquery DataTable communicate with asp.net core backend,
@@ -196,7 +215,7 @@ var table = $('#fingers10').DataTable({
         orderCellsTop: true,
         autoWidth: true,
         deferRender: true,
-        lengthMenu: [5, 10, 15, 20],
+        lengthMenu: [[5, 10, 15, 20, -1], [5, 10, 15, 20, "All"]],
         dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6 text-right"l>><"row"<"col-sm-12"tr>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
         buttons: [
             {
@@ -335,23 +354,27 @@ $('#fingers10 thead tr:last th:eq(' + index + ') input')
 ```c#
 public class Demo
 {
+    [JqueryDataTableColumn(Order = 1)]
     public int Id { get; set; }
 
+    [JqueryDataTableColumn(Order = 2)]
     [SearchableString(EntityProperty = "FirstName,LastName")]
     [Sortable(EntityProperty = "FirstName,LastName", Default = true)]
     public string Name { get => $"{FirstName} {LastName}"; }
     
-    [ExcludeFromJqueryDataTable]
+    [JqueryDataTableColumn(Exclude = true)]
     public string FirstName { get; set; }
 
-    [ExcludeFromJqueryDataTable]
+    [JqueryDataTableColumn(Exclude = true)]
     public string LastName { get; set; }
 
+    [JqueryDataTableColumn(Order = 3)]
     [SearchableEnum(typeof(Position))]
     [Sortable]
     public string Position { get; set; }
 
     [Display(Name = "Office")]
+    [JqueryDataTableColumn(Order = 4)]
     [SearchableString(EntityProperty = "Office")]
     [Sortable(EntityProperty = "Office")]
     public string Offices { get; set; }
@@ -367,11 +390,13 @@ public class Demo
 ```c#
 public class DemoNestedLevelOne
 {
+    [JqueryDataTableColumn(Order = 5)]
     [SearchableShort]
     [Sortable]
     public short? Experience { get; set; }
 
     [DisplayName("Extn")]
+    [JqueryDataTableColumn(Order = 6)]
     [SearchableInt(EntityProperty = "Extn")]
     [Sortable(EntityProperty = "Extn")]
     public int? Extension { get; set; }
@@ -387,11 +412,13 @@ public class DemoNestedLevelOne
 ```c#
 public class DemoNestedLevelTwo
 {
+    [DisplayName("Start Date")]
+    [JqueryDataTableColumn(Order = 7)]
     [SearchableDateTime(EntityProperty = "StartDate")]
     [Sortable(EntityProperty = "StartDate")]
-    [DisplayName("Start Date")]
     public DateTime? StartDates { get; set; }
 
+    [JqueryDataTableColumn(Order = 8)]
     [SearchableLong]
     [Sortable]
     public long? Salary { get; set; }
@@ -530,6 +557,7 @@ public class DefaultDemoService:IDemoService
 
     public async Task<JqueryDataTablesPagedResults<Demo>> GetDataAsync(JqueryDataTablesParameters table)
     {
+        Demo[] items = null;
         IQueryable<DemoEntity> query = _context.Demos
                                                .AsNoTracking()
                                                .Include(x => x.DemoNestedLevelOne)
@@ -539,12 +567,20 @@ public class DefaultDemoService:IDemoService
 
         var size = await query.CountAsync();
 
-        var items = await query
-            .AsNoTracking()
+        if (table.Length > 0)
+        {
+            items = await query
             .Skip((table.Start / table.Length) * table.Length)
             .Take(table.Length)
             .ProjectTo<Demo>(_mappingConfiguration)
             .ToArrayAsync();
+        }
+        else
+        {
+            items = await query
+            .ProjectTo<Demo>(_mappingConfiguration)
+            .ToArrayAsync();
+        }
 
         return new JqueryDataTablesPagedResults<Demo> {
             Items = items,
