@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <PackageReference Include="Fingers10.ExcelExport" Version="1.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Localization" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="System.Text.Json" Version="4.6.0" />
