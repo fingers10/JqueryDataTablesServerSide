@@ -1,3 +1,4 @@
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,8 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Providers
             .GetMethods()
             .First(x => x.Name == "ToLower");
 
+        private static readonly MethodInfo _stringContainsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+
         private static ConstantExpression IgnoreCase
             => Expression.Constant(StringComparison.OrdinalIgnoreCase);
 
@@ -46,8 +49,8 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Providers
             switch (op.ToLower())
             {
                 case StartsWithOperator: return Expression.Call(left, StartsWithMethod, right, IgnoreCase);
-                case ContainsOperator: return Expression.Call(Expression.Call(left, ToLowerMethod), ContainsMethod, right);
-                case EqualsOperator: return Expression.Call(Expression.Call(left, ToLowerMethod), StringEqualsMethod, right, IgnoreCase);
+                case ContainsOperator: return Expression.Call(left.TrimToLower(), _stringContainsMethod, right.TrimToLower());
+                case EqualsOperator: return Expression.Equal(left.TrimToLower(), right.TrimToLower());
                 default: return base.GetComparison(left, op, right);
             }
         }

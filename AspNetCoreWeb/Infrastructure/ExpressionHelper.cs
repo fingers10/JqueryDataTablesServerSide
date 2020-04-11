@@ -9,6 +9,9 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
 {
     public static class ExpressionHelper
     {
+        private static readonly MethodInfo _stringTrimMethod = typeof(string).GetMethod("Trim", new Type[0]);
+        private static readonly MethodInfo _stringToLowerMethod = typeof(string).GetMethod("ToLower", new Type[0]);
+
         private static readonly MethodInfo LambdaMethod = typeof(Expression)
             .GetMethods()
             .First(x => x.Name == "Lambda" && x.ContainsGenericParameters && x.GetParameters().Length == 2);
@@ -67,6 +70,24 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             }
 
             return Expression.Property(param, propertyName);
+        }
+
+        public static Expression TrimToLower(this MemberExpression member)
+        {
+            var trimMemberCall = Expression.Call(member, _stringTrimMethod);
+            return Expression.Call(trimMemberCall, _stringToLowerMethod);
+        }
+
+        public static Expression TrimToLower(this ConstantExpression constant)
+        {
+            var trimMemberCall = Expression.Call(constant, _stringTrimMethod);
+            return Expression.Call(trimMemberCall, _stringToLowerMethod);
+        }
+
+        public static Expression TrimToLower(this Expression constant)
+        {
+            var trimMemberCall = Expression.Call(constant, _stringTrimMethod);
+            return Expression.Call(trimMemberCall, _stringToLowerMethod);
         }
 
         public static LambdaExpression GetLambda<TSource, TDest>(ParameterExpression obj, Expression arg)
