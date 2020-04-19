@@ -132,7 +132,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             // "Value"
             //var right = term.ExpressionProvider.GetValue(term.Value);
             var constant = term.ExpressionProvider.GetValue(term.Value);
-            var right = constant.Type != left.Type ? Expression.Convert(constant, left.Type) : (Expression)constant;
+            var right = constant.Type != left.Type && left.Type.BaseType != typeof(Enum) ? Expression.Convert(constant, left.Type) : (Expression)constant;
 
             // x.Property == "Value"
             return term.ExpressionProvider.GetComparison(left, term.Operator, right);

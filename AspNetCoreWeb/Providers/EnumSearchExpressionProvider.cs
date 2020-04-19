@@ -7,12 +7,12 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Providers
     {
         public override ConstantExpression GetValue(string input)
         {
-            if (!Enum.TryParse<TEnum>(input.Trim().Replace(" ", string.Empty), true, out var value))
-            {
-                throw new ArgumentException("Invalid Search value.");
-            }
+            //if (!Enum.TryParse<TEnum>(input.Trim().Replace(" ", string.Empty), true, out var value))
+            //{
+            //    throw new ArgumentException("Invalid Search value.");
+            //}
 
-            return Expression.Constant(value);
+            return Expression.Constant(input);
         }
     }
 }

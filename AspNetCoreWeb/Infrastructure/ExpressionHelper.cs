@@ -72,6 +72,13 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure
             return Expression.Property(param, propertyName);
         }
 
+        public static Expression CastToObjectAndString(this MemberExpression member)
+        {
+            var objectMemberConvert = Expression.Convert(member, typeof(object));
+            var stringMemberConvert = Expression.Convert(objectMemberConvert, typeof(string));
+            return stringMemberConvert as Expression;
+        }
+
         public static Expression TrimToLower(this MemberExpression member)
         {
             var trimMemberCall = Expression.Call(member, _stringTrimMethod);

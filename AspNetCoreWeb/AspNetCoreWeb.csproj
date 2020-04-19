@@ -20,7 +20,8 @@
     <PackageReleaseNotes>1. Fixed String Search Issues.
 2. Added Localized Jquery DataTables Tag Helper
 3. Added CSV Export
-4. Updated Nuget Dependencies</PackageReleaseNotes>
+4. Updated Nuget Dependencies
+5. Added Enum Contains Search</PackageReleaseNotes>
     <AssemblyName>JqueryDataTables.ServerSide.AspNetCoreWeb</AssemblyName>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <FileVersion>4.0.0.0</FileVersion>
