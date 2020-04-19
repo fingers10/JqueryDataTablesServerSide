@@ -21,7 +21,8 @@
 2. Added Localized Jquery DataTables Tag Helper
 3. Added CSV Export
 4. Updated Nuget Dependencies
-5. Added Enum Contains Search</PackageReleaseNotes>
+5. Added Enum Contains Search
+6. Added Support for HTML5 datatypes in TagHelper</PackageReleaseNotes>
     <AssemblyName>JqueryDataTables.ServerSide.AspNetCoreWeb</AssemblyName>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <FileVersion>4.0.0.0</FileVersion>
@@ -33,8 +34,8 @@
     <PackageReference Include="Fingers10.ExcelExport" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Localization" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.2.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="System.Text.Json" Version="4.6.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="System.Text.Json" Version="4.7.1" />
     <None Include="Images\icon.png" Pack="true" PackagePath="" />
     <None Include="..\LICENSE.md" Pack="true" PackagePath="" />
   </ItemGroup>
