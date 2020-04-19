@@ -14,20 +14,22 @@
     <PackageTags>JqueryDataTables, Asp.Net Core, Server Side, Multiple Column, Dynamic, Searching, Sorting, Paging, Excel Export</PackageTags>
     <PackageId>JqueryDataTables.ServerSide.AspNetCoreWeb</PackageId>
     <PackageIcon>icon.png</PackageIcon>
-    <Version>3.2.0</Version>
+    <Version>4.0.0</Version>
     <RootNamespace>JqueryDataTables.ServerSide.AspNetCoreWeb</RootNamespace>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>1. Removed ExcludeFromJqueryDataTableAttribute.
-2. Added JqueryDataTableColumnAttribute</PackageReleaseNotes>
+    <PackageReleaseNotes>1. Fixed String Search Issues.
+2. Added Localized Jquery DataTables Tag Helper
+3. Added CSV Export
+4. Updated Nuget Dependencies</PackageReleaseNotes>
     <AssemblyName>JqueryDataTables.ServerSide.AspNetCoreWeb</AssemblyName>
-    <AssemblyVersion>3.2.0.0</AssemblyVersion>
-    <FileVersion>3.2.0.0</FileVersion>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <FileVersion>4.0.0.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fingers10.ExcelExport" Version="1.0.0" />
+    <PackageReference Include="Fingers10.ExcelExport" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Localization" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
