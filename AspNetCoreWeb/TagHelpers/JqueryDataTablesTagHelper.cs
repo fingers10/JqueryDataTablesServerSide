@@ -1,6 +1,7 @@
 ﻿using JqueryDataTables.ServerSide.AspNetCoreWeb.Attributes;
 using JqueryDataTables.ServerSide.AspNetCoreWeb.Infrastructure;
 using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,35 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
     [HtmlTargetElement("jquery-datatables", Attributes = "id,class,model")]
     public class JqueryDataTablesTagHelper : TagHelper
     {
+        private static readonly Dictionary<string, string> _defaultInputTypes =
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "Text", InputType.Text.ToString().ToLowerInvariant() },
+                { "PhoneNumber", "tel" },
+                { "Url", "url" },
+                { "EmailAddress", "email" },
+                { "Date", "date" },
+                { "DateTime", "datetime-local" },
+                { "DateTime-local", "datetime-local" },
+                { nameof(DateTimeOffset), "text" },
+                { "Time", "time" },
+                { "Week", "week" },
+                { "Month", "month" },
+                { nameof(Byte), "number" },
+                { nameof(SByte), "number" },
+                { nameof(Int16), "number" },
+                { nameof(UInt16), "number" },
+                { nameof(Int32), "number" },
+                { nameof(UInt32), "number" },
+                { nameof(Int64), "number" },
+                { nameof(UInt64), "number" },
+                { nameof(Single), InputType.Text.ToString().ToLowerInvariant() },
+                { nameof(Double), InputType.Text.ToString().ToLowerInvariant() },
+                { nameof(Boolean), InputType.CheckBox.ToString().ToLowerInvariant() },
+                { nameof(Decimal), InputType.Text.ToString().ToLowerInvariant() },
+                { nameof(String), InputType.Text.ToString().ToLowerInvariant() }
+            };
+
         public string Id { get; set; }
         public string Class { get; set; }
         public object Model { get; set; }
@@ -34,6 +64,9 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
 
         [HtmlAttributeName("search-input-placeholder-prefix")]
         public string SearchInputPlaceholderPrefix { get; set; }
+
+        [HtmlAttributeName("use-property-type-as-input-type")]
+        public bool UsePropertyTypeAsInputType { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -68,7 +101,7 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
 
                 if (column.HasSearch)
                 {
-                    searchRow.AppendLine($@"<input type=""search"" style=""{SearchInputStyle}"" class=""{SearchInputClass}"" placeholder=""{SearchInputPlaceholderPrefix} {column.Name}"" aria-label=""{column.Name}"" />");
+                    searchRow.AppendLine($@"<input type=""{(UsePropertyTypeAsInputType ? column.Type : "search")}"" style=""{SearchInputStyle}"" class=""{SearchInputClass}"" placeholder=""{SearchInputPlaceholderPrefix} {column.Name}"" aria-label=""{column.Name}"" />");
                 }
 
                 searchRow.AppendLine("</th>");
@@ -100,7 +133,8 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.TagHelpers
                     Name = ExpressionHelper.GetPropertyDisplayName(prop),
                     HasSearch = prop.GetCustomAttributes<SearchableAttribute>().Any(),
                     Order = jqueryDataTableColumn != null ? jqueryDataTableColumn.Order : 0,
-                    Exclude = jqueryDataTableColumn != null ? jqueryDataTableColumn.Exclude : true
+                    Exclude = jqueryDataTableColumn != null ? jqueryDataTableColumn.Exclude : true,
+                    Type = _defaultInputTypes.TryGetValue(prop.PropertyType.Name, out var inputType) ? inputType : "search"
                 };
             }
 
