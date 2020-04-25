@@ -62,7 +62,7 @@ All the above attributes have the following options,
 
 ## Columns 
 ### Name
-Column names in HTML Table/Excel Export can be configured using the below attributes
+Column names in HTML Table can be configured using the below attributes
 * `[Display(Name = "")]`
 * `[DisplayName(“”)]`
 
@@ -74,7 +74,7 @@ And here are the options,
 
 |Option |Type    |Example                                  |Description|
 |-------|--------|-----------------------------------------|-----------|
-|Exclude|`bool`|`[JqueryDataTableColumn(Exclude = true)]`|To exclude the property of your model from being added in HTML|
+|Exclude|`bool`  |`[JqueryDataTableColumn(Exclude = true)]`|To exclude the property of your model from being added in HTML|
 |Order  |`int`   |`[JqueryDataTableColumn(Order = N)]`     |To control the order of columns in HTML|
 
 **Please note:** From **v.3.2.0** all the simple properties in your models **must have `[JqueryDataTableColumn]` attribute** for the `<jquery-datatables>` Tag Helper to work.
@@ -84,7 +84,7 @@ And here are the options,
 
 |Operator|Description|`string`|`DateTime`|`short`|`int`|`long`|`decimal`|`double`|`enum`|
 |--------|-----------|--------|----------|-------|-----|------|---------|--------|------|
-|`co`    |Contains   |:heavy_check_mark:|:x:|:x:|:x:|:x:|:x:|:x:|:x:|
+|`co`    |Contains   |:heavy_check_mark:|:x:|:x:|:x:|:x:|:x:|:x:|:heavy_check_mark:|
 |`eq`    |Equals     | :heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|
 |`gt`    |GreaterThan| :x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|
 |`gte`   |GreaterThanEqual| :x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|
@@ -92,7 +92,7 @@ And here are the options,
 |`lte`   |LesserThanEqual| :x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|
 
 # NuGet:
-* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v3.2.0**
+* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v4.0.0**
 
 # Usage:
 To activate and make Jquery DataTable communicate with asp.net core backend,
@@ -182,6 +182,8 @@ Add a **JqueryDataTables TagHelper** reference to your `_ViewImports.cshtml` fil
 </jquery-datatables>
 ```
 
+**Please note:** If you prefer HTML Localization then, `<jquery-datatables-html-localized>` Tag Helper is available with all the above properties.
+
 ## TagHelpers Attributes
 | Option                            | Description |
 |-----------------------------------|-------------|
@@ -194,6 +196,7 @@ Add a **JqueryDataTables TagHelper** reference to your `_ViewImports.cshtml` fil
 | `search-input-class`              | to apply the given css class to the search input controls added in each column inside `<thead>` |
 | `search-input-style`              | to apply the given css styles to the search input controls added in each column inside `<thead>` |
 | `search-input-placeholder-prefix` | to apply your placeholder text as prefix in search input controls in each column inside `<thead>` |
+|`use-property-type-as-input-type`  | to generate `HTML5` type input controls based on property type |
     
 # Initialize DataTable
 >Add the following code to initialize DataTable. Don't miss to add `orderCellsTop : true`. This makes sure to add sorting functionality to the first row in the table header. For other properties refer Jquery DataTables official documentation.
@@ -347,7 +350,7 @@ $('#fingers10 thead tr:last th:eq(' + index + ') input')
 ```
 
 # Model to be passed to DataTable
->Decorate the properties based on their data types. For Nested Complex Properties, decorate them with `[NestedSearchable]`/`[NestedSortable]` attributes upto any level.
+>Decorate the properties based on their data types. For Nested Complex Properties, decorate them with `[NestedSearchable]`/`[NestedSortable]`/`[NestedIncludeInReport]` attributes upto any level.
 
 ## Root Model:
 
@@ -357,6 +360,7 @@ public class Demo
     [JqueryDataTableColumn(Order = 1)]
     public int Id { get; set; }
 
+    [IncludeInReport(Order = 1)]
     [JqueryDataTableColumn(Order = 2)]
     [SearchableString(EntityProperty = "FirstName,LastName")]
     [Sortable(EntityProperty = "FirstName,LastName", Default = true)]
@@ -368,17 +372,20 @@ public class Demo
     [JqueryDataTableColumn(Exclude = true)]
     public string LastName { get; set; }
 
+    [IncludeInReport(Order = 2)]
     [JqueryDataTableColumn(Order = 3)]
     [SearchableEnum(typeof(Position))]
     [Sortable]
     public string Position { get; set; }
 
     [Display(Name = "Office")]
+    [IncludeInReport(Order = 3)]
     [JqueryDataTableColumn(Order = 4)]
     [SearchableString(EntityProperty = "Office")]
     [Sortable(EntityProperty = "Office")]
     public string Offices { get; set; }
 
+    [NestedIncludeInReport]
     [NestedSearchable]
     [NestedSortable]
     public DemoNestedLevelOne DemoNestedLevelOne { get; set; }
@@ -390,17 +397,20 @@ public class Demo
 ```c#
 public class DemoNestedLevelOne
 {
+    [IncludeInReport(Order = 4)]
     [JqueryDataTableColumn(Order = 5)]
     [SearchableShort]
     [Sortable]
     public short? Experience { get; set; }
 
     [DisplayName("Extn")]
+    [IncludeInReport(Order = 5)]
     [JqueryDataTableColumn(Order = 6)]
     [SearchableInt(EntityProperty = "Extn")]
     [Sortable(EntityProperty = "Extn")]
     public int? Extension { get; set; }
 
+    [NestedIncludeInReport]
     [NestedSearchable(ParentEntityProperty = "DemoNestedLevelTwo")]
     [NestedSortable(ParentEntityProperty = "DemoNestedLevelTwo")]
     public DemoNestedLevelTwo DemoNestedLevelTwos { get; set; }
@@ -413,11 +423,13 @@ public class DemoNestedLevelOne
 public class DemoNestedLevelTwo
 {
     [DisplayName("Start Date")]
+    [IncludeInReport(Order = 6)]
     [JqueryDataTableColumn(Order = 7)]
     [SearchableDateTime(EntityProperty = "StartDate")]
     [Sortable(EntityProperty = "StartDate")]
     public DateTime? StartDates { get; set; }
 
+    [IncludeInReport(Order = 7)]
     [JqueryDataTableColumn(Order = 8)]
     [SearchableLong]
     [Sortable]
@@ -591,7 +603,26 @@ public class DefaultDemoService:IDemoService
  ```   
  **Please note:** If you are having DataAccessLogic in a separate project, the create instance of `SearchOptionsProcessor` and `SortOptionsProcessor` inside **ActionMethod/Handler** and pass it as a parameter to Data Access Logic.
  
- # Excel Export
+# Report 
+## Name
+Column names in Report can be configured using the below attributes
+* `[Display(Name = "")]`
+* `[DisplayName(“”)]`
+
+## Report Setup
+To customize the Column display in Report, use the following attribute
+* `[IncludeInReport]`
+
+And here are the options,
+
+|Option |Type    |Example                                  |Description|
+|-------|--------|-----------------------------------------|-----------|
+|Order  |`int`   |`[IncludeInReport(Order = N)]`           |To control the order of columns in Report|
+
+**Please note:** From **v.4.0.0** all the simple properties in your models **must have `[IncludeInReport]` attribute** for the report export to work.
+
+ 
+### Excel Export
  To exporting the filtered and sorted data as an excel file, add `GetExcel` action method in your controller as shown below. Return the   data as `JqueryDataTablesExcelResult<T>` by passing filtered/ordered data, excel sheet name and excel file name. **JqueryDataTablesExcelResult** Action Result that I have added in the Nuget package. This will take care of converting your data as excel file and return it back to browser.
  
  >If you want all the results in excel export without pagination, then please write a **separate service method** to retrive data without using `Take()` and `Skip()`
@@ -611,7 +642,7 @@ public class DefaultDemoService:IDemoService
     // var results = await _demoService.GetDataAsync(JsonConvert.DeserializeObject<JqueryDataTablesParameters>(param));
     // If you're using new System.Text.Json then use below line
     var results = await _demoService.GetDataAsync(JsonSerializer.Deserialize<JqueryDataTablesParameters>(param));
-    return new JqueryDataTablesExcelResult<DemoExcel>(_mapper.Map<List<DemoExcel>>(results.Items),"Demo Sheet Name","Fingers10");
+    return new JqueryDataTablesExcelResult<Demo>(results.Items,"Demo Sheet Name","Fingers10");
  }
   ```   
   
@@ -628,7 +659,7 @@ public class DefaultDemoService:IDemoService
     // var results = await _demoService.GetDataAsync(JsonConvert.DeserializeObject<JqueryDataTablesParameters>(param));
     // If you're using new System.Text.Json then use below line
     var results = await _demoService.GetDataAsync(JsonSerializer.Deserialize<JqueryDataTablesParameters>(param));
-    return new JqueryDataTablesExcelResult<DemoExcel>(_mapper.Map<List<DemoExcel>>(results.Items),"Demo Sheet Name","Fingers10");
+    return new JqueryDataTablesExcelResult<Demo>(results.Items,"Demo Sheet Name","Fingers10");
  }
  ```   
  
@@ -640,7 +671,7 @@ public class DefaultDemoService:IDemoService
 public async Task<IActionResult> GetExcel([ModelBinder(typeof(JqueryDataTablesBinder))] JqueryDataTablesParameters param)
 {
     var results = await _demoService.GetDataAsync(param);
-    return new JqueryDataTablesExcelResult<DemoExcel>(_mapper.Map<List<DemoExcel>>(results.Items),"Demo Sheet Name","Fingers10");
+    return new JqueryDataTablesExcelResult<Demo>(results.Items,"Demo Sheet Name","Fingers10");
 }
 ```
  
@@ -650,11 +681,74 @@ public async Task<IActionResult> GetExcel([ModelBinder(typeof(JqueryDataTablesBi
 public async Task<IActionResult> OnGetExcelAsync([ModelBinder(typeof(JqueryDataTablesBinder))] JqueryDataTablesParameters param)
 {
     var results = await _demoService.GetDataAsync(param);
-    return new JqueryDataTablesExcelResult<DemoExcel>(_mapper.Map<List<DemoExcel>>(results.Items),"Demo Sheet Name","Fingers10");
+    return new JqueryDataTablesExcelResult<Demo>(results.Items,"Demo Sheet Name","Fingers10");
+}
+```
+
+### CSV Export
+ To exporting the filtered and sorted data as an CSV file, add `GetCSV` action method in your controller as shown below. Return the   data as `JqueryDataTablesCSVResult<T>` by passing filtered/ordered data, excel sheet name and excel file name. **JqueryDataTablesCSVResult** Action Result that I have added in the Nuget package. This will take care of converting your data as excel file and return it back to browser.
+ 
+ >If you want all the results in excel export without pagination, then please write a **separate service method** to retrive data without using `Take()` and `Skip()`
+ 
+ ## AJAX POST Configuration
+ 
+ ### Action Method
+ 
+ ```c#
+ public async Task<IActionResult> GetCSV()
+ {
+    // Here we will be getting the param that we have stored in the session in server side action method/page handler
+    // and deserialize it to get the required data.
+    var param = HttpContext.Session.GetString(nameof(JqueryDataTablesParameters));
+
+    // If you're using Json.Net, then uncomment below line else remove below line
+    // var results = await _demoService.GetDataAsync(JsonConvert.DeserializeObject<JqueryDataTablesParameters>(param));
+    // If you're using new System.Text.Json then use below line
+    var results = await _demoService.GetDataAsync(JsonSerializer.Deserialize<JqueryDataTablesParameters>(param));
+    return new JqueryDataTablesCSVResult<Demo>(results.Items,"Fingers10");
+ }
+  ```   
+  
+ ### Page Handler
+  
+  ```c#
+ public async Task<IActionResult> OnGetCSVAsync()
+ {
+    // Here we will be getting the param that we have stored in the session in server side action method/page handler
+    // and deserialize it to get the required data.
+    var param = HttpContext.Session.GetString(nameof(JqueryDataTablesParameters));
+
+    // If you're using Json.Net, then uncomment below line else remove below line
+    // var results = await _demoService.GetDataAsync(JsonConvert.DeserializeObject<JqueryDataTablesParameters>(param));
+    // If you're using new System.Text.Json then use below line
+    var results = await _demoService.GetDataAsync(JsonSerializer.Deserialize<JqueryDataTablesParameters>(param));
+    return new JqueryDataTablesCSVResult<Demo>(results.Items,"Fingers10");
+ }
+ ```   
+ 
+ ## AJAX GET Configuration
+ 
+ ### Action Method
+ 
+```c#
+public async Task<IActionResult> GetCSV([ModelBinder(typeof(JqueryDataTablesBinder))] JqueryDataTablesParameters param)
+{
+    var results = await _demoService.GetDataAsync(param);
+    return new JqueryDataTablesCSVResult<Demo>(results.Items,"Fingers10");
 }
 ```
  
- **Please note:** `GetExcel` **ActionMethod/Handler** name must match the name you define in the excel export action click in your Jquery DataTable Initialization script. For getting excel file from complex models/mappings, either project the results to final simple model or use automapper flattening feature to map the results from complex model to simple model.
+ ### Page Handler
+ 
+```c#
+public async Task<IActionResult> OnGetCSVAsync([ModelBinder(typeof(JqueryDataTablesBinder))] JqueryDataTablesParameters param)
+{
+    var results = await _demoService.GetDataAsync(param);
+    return new JqueryDataTablesCSVResult<Demo>(results.Items,"Fingers10");
+}
+```
+ 
+ **Please note:** `GetReport` **ActionMethod/Handler** name must match the name you define in the excel export action click in your Jquery DataTable Initialization script. From `v4.0.0` `[IncludeInReport(Order = N)]` attribute needs to be present in your model to include the field in your excel report.
  
  # Coming Soon
  JqueryDataTablesServerSide is actively under development and I plan to have even more useful features implemented soon, including:
@@ -670,10 +764,11 @@ public async Task<IActionResult> OnGetExcelAsync([ModelBinder(typeof(JqueryDataT
  * Visual Studio Community 2019
  
  # Other Nuget Packages Used
- * Fingers10.ExcelExport (1.0.0) - For Generating Excel Report
+ * Fingers10.ExcelExport (3.0.0) - For Generating Excel/CSV Report
  * Microsoft.AspNetCore.Razor (2.2.0) - For using TagHelper
- * Newtonsoft.Json (12.0.2) - For Serialization/Deserialization
- * System.Text.Json (4.6.0) - For Serialization/Deserialization
+ * Microsoft.AspNetCore.Mvc.Localization - For HTML Localization in Tag Helper
+ * Newtonsoft.Json (12.0.3) - For Serialization/Deserialization
+ * System.Text.Json (4.7.1) - For Serialization/Deserialization
  
  # Author
  * **Abdul Rahman** - Software Developer - from India. Software Consultant, Architect, Freelance Lecturer/Developer and Web Geek.  
