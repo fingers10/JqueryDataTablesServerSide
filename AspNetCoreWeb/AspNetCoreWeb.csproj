@@ -35,7 +35,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Localization" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="System.Text.Json" Version="4.7.1" />
+    <PackageReference Include="System.Text.Json" Version="4.7.2" />
     <None Include="Images\icon.png" Pack="true" PackagePath="" />
     <None Include="..\LICENSE.md" Pack="true" PackagePath="" />
   </ItemGroup>

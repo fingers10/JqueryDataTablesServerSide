@@ -1,4 +1,5 @@
 ﻿using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -38,6 +39,11 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Extentions
                 RecordsFiltered = list.Count(),
                 RecordsTotal = list.Count()
             };
+        }
+        public static string ToJsonString<T>(this JqueryDataTablesResult<T> result)
+        {
+            var json = JsonConvert.SerializeObject(result);
+            return json;
         }
     }
 }
