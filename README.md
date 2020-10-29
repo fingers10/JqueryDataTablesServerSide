@@ -42,6 +42,7 @@ If you liked `JqueryDataTablesServerSide` project or if it helped you, please gi
 * `[SearchableLong]`
 * `[SearchableDecimal]`
 * `[SearchableDouble]`
+* `[SearchableGuid]`
 * `[SearchableEnum(typeof(TEnum))]`
 * `[NestedSearchable]`
 
@@ -82,21 +83,20 @@ And here are the options,
 # Compatibility Chart
 >The following chart describes the operator compatibility with data types with green as compatible and red as not compatible.
 
-|Operator|Description|`string`|`DateTime`|`short`|`int`|`long`|`decimal`|`double`|`enum`|
+|Operator|Description|`string`|`DateTime`|`short`|`int`|`long`|`decimal`|`double`|`enum`|`guid`|
 |--------|-----------|--------|----------|-------|-----|------|---------|--------|------|
-|`co`    |Contains   |:heavy_check_mark:|:x:|:x:|:x:|:x:|:x:|:x:|:heavy_check_mark:|
+|`co`    |Contains   |:heavy_check_mark:|:x:|:x:|:x:|:x:|:x:|:x:|:heavy_check_mark:|:heavy_check_mark:
 |`eq`    |Equals     | :heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|
-|`gt`    |GreaterThan| :x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|
-|`gte`   |GreaterThanEqual| :x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|
-|`lt`    |LesserThan| :x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|
-|`lte`   |LesserThanEqual| :x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|
+|`gt`    |GreaterThan| :x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|:x:
+|`gte`   |GreaterThanEqual| :x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|:x:
+|`lt`    |LesserThan| :x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|:x:
+|`lte`   |LesserThanEqual| :x:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:x:|:x:
 
 # NuGet:
-* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v4.0.0**
+* [JqueryDataTables.ServerSide.AspNetCoreWeb](https://www.nuget.org/packages/JqueryDataTables.ServerSide.AspNetCoreWeb/) **v4.0.1**
 
 # Usage:
-To activate and make Jquery DataTable communicate with asp.net core backend,
-
+To activate and make Jquery DataTable communicate with asp.net core backend,1
 ## Package Manager:
 ```c#
 PM> Install-Package JqueryDataTables.ServerSide.AspNetCoreWeb
