@@ -2,7 +2,7 @@
 
 namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Models
 {
-    public class JqueryDataTablesPagedResults<T>
+    public class JqueryDataTablesResults<T>
     {
         public IEnumerable<T> Items { get; set; }
 
