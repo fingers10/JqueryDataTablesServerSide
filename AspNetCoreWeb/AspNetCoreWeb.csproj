@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <Authors>Abdul Rahman (@fingers10)</Authors>
     <Company>Abdul Rahman (@fingers10)</Company>
     <Product>Fingers10.JqueryDataTablesServerSide.AspNetCore</Product>
@@ -35,7 +35,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Localization" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="System.Text.Json" Version="4.7.1" />
+    <PackageReference Include="System.Text.Json" Version="4.7.2" />
     <None Include="Images\icon.png" Pack="true" PackagePath="" />
     <None Include="..\LICENSE.md" Pack="true" PackagePath="" />
   </ItemGroup>

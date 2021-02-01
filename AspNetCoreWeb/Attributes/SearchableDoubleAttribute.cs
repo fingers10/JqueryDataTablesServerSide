@@ -11,4 +11,14 @@ namespace JqueryDataTables.ServerSide.AspNetCoreWeb.Attributes
             ExpressionProvider = new DoubleSearchExpressionProvider();
         }
     }
+
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class SearchableGuidAttribute : SearchableAttribute
+    {
+        public SearchableGuidAttribute()
+        {
+            ExpressionProvider = new GuidSearchExpressionProvider();
+        }
+    }
 }
